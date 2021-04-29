@@ -50,6 +50,7 @@ function Register({ user, theme }) {
           .then(function (valid) {
             if (valid) {
               if (window.confirm('A confirmation mail will be sent to this email: ' + state.email)) {
+                enqueueSnackbar('Loading...', { ...notificationConfig });
                 api('registration', { name: state.username, password: state.password, email: state.email })
                   .then(async d => {
                     const data = await d.json();
