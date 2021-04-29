@@ -1,0 +1,243 @@
+@import '../../styles/variables';
+
+.navbar {
+  display: flex;
+  border-bottom: 1px solid $border-gray;
+  font-size: 13px;
+
+  a {
+    display: flex;
+    align-items: center;
+    padding: 10px 10px 8px 10px;
+    border-bottom: 2px solid transparent;
+    transition: all .15s ease-in-out;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 14px;
+  }
+  @media (min-width: 1200px) {
+    font-size: 15px;
+  }
+}
+
+.profile {
+  display: block;
+  align-items: center;
+  justify-content: space-between;
+
+  .create_task {
+    justify-content: center;
+    margin-top: 10px;
+    @media (min-width: 768px) {
+      margin-top: 0;
+    }
+  }
+  div {
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+    b {
+      max-width: 70%;
+      margin: 0 20px;
+      font-size: 16px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      word-wrap: break-word;
+      display: -moz-box;
+      -moz-box-orient: vertical;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      line-clamp: 2;
+      box-orient: vertical;
+    }
+  }
+
+  @media (min-width: 768px) {
+    display: flex;
+    height: 120px;
+    div {
+      max-width: 80%;
+      b {
+        margin-left: 20px;
+        font-size: 22px;
+        max-width: 85%;
+      }
+    }
+  }
+  @media (min-width: 1200px) {
+    height: 160px;
+    div b {
+      font-size: 32px;
+    }
+  }
+}
+
+.activity {
+  overflow-y: auto;
+  height: calc(100% - 38px);
+
+  @media (min-width: 768px) {
+    height: calc(100% - 40px);
+  }
+  @media (min-width: 1200px) {
+    height: calc(100% - 43px);
+    &::-webkit-scrollbar {
+      width: 2px;
+    }  
+    &::-webkit-scrollbar-thumb {
+      background-color: $text-note;
+      outline: 1px solid $border-gray;
+    }  
+  }
+}
+.activ_container {
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  font-size: 12px;
+  margin-bottom: 12px;
+  div {
+    display: flex;
+    align-items: center;
+  }
+  .title {
+    margin: 0 10px;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    display: -moz-box;
+    -moz-box-orient: vertical;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-clamp: 2;
+    box-orient: vertical;
+  }
+  .date {
+    font-weight: 500;
+    color: $text-note;
+    font-size: 11px;
+    @media (min-width: 768px) {
+      font-size: 12px;
+    }
+    @media (min-width: 1200px) {
+      font-size: 13px;
+    }
+  }
+  @media (min-width: 768px) {
+    font-size: 13px;
+  }
+  @media (min-width: 1200px) {
+    font-size: 14px;
+  }
+}
+
+.flex {
+  display: block;
+  margin-top: 10px;
+  @media (min-width: 768px) {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+.flex_block {
+  margin-bottom: 10px;
+  width: 100%;
+  height: 300px;
+  @media (min-width: 768px) {
+    width: calc(50% - 10px);
+    height: 350px;
+  }
+  @media (min-width: 1200px) {
+    width: calc(50% - 10px);
+    height: 400px;
+  }
+}
+
+.canvas_container {
+  display: flex;
+  height: 229px; 
+  width: 100%;
+  @media (min-width: 768px) {
+    height: 279px;
+  }
+  @media (min-width: 1200px) {
+    height: 329px; 
+  }
+}
+
+.text_header {
+  font-size: 16px;
+  font-weight: 600;
+  padding-bottom: 5px;
+  border-bottom: 1px solid $border-gray;
+  margin-bottom: 10px;
+
+  @media (min-width: 768px) {
+    font-size: 18px;
+  }
+  @media (min-width: 1200px) {
+    font-size: 20px;
+  }
+}
+.text_common {
+  font-size: 13px;
+  @media (min-width: 768px) {
+    font-size: 14px;
+  }
+  @media (min-width: 1200px) {
+    font-size: 15px;
+  }
+}
+
+.online_container {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  @media (min-width: 768px) {
+    font-size: 13px;
+  }
+  @media (min-width: 1200px) {
+    font-size: 14px;
+  }
+}
+.online_icon {
+  display: flex;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+.offline {
+  background: $text-note;
+}
+.online_primary {
+  background: $primary;
+}
+.online_dark {
+  background: $dark;
+}
+
+.not_activated {
+  padding-top: 40px;
+  display: flex;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 20px;
+}
+
+// A TAG STYLES
+.primary {
+  &:hover {
+    border-bottom: 2px solid $primary;
+  }
+}
+.dark {
+  &:hover {
+    border-bottom: 2px solid $dark;
+  }
+}

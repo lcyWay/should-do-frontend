@@ -1,0 +1,24 @@
+.statistic {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0;
+  margin: 10px 0;
+
+  @media (min-width: 768px) {
+    padding: 0 70px;
+  }
+  @media (min-width: 1200px) {
+    padding: 0 150px;
+  }
+}
+
+.image_container {
+  width: 70px;
+  @media (min-width: 768px) {
+    width: 85px;
+  }
+  @media (min-width: 1200px) {
+    width: 100px;
+  }
+}

@@ -1,0 +1,73 @@
+@import '../../styles/variables';
+
+.background {
+  height: 49px;
+  transition: all .15s ease-in-out;
+
+  @media (min-width: 768px) {
+    height: 64px;
+  }
+  @media (min-width: 1200px) {
+    height: 79px;
+  }
+}
+
+.container {
+  margin: auto;
+  max-width: 1000px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+
+  a {
+    margin: 4px;
+    max-width: 110px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  span {
+    margin: 4px;
+    cursor: pointer;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 16px;
+    a {
+      margin: 7px;
+    }
+    span {
+      margin: 7px;
+    }
+  }
+  @media (min-width: 1200px) {
+    font-size: 18px;
+    a {
+      margin: 10px;
+    }
+    span {
+      margin: 10px;
+    }
+  }
+}
+
+.primary {
+  background: white;
+  border-bottom: 1px solid $border-gray;
+}
+.dark {
+  border-bottom: 1px solid $dark;
+  background: $dark;
+  a {
+    color: $text-white;
+  }
+  div {
+    color: $text-white;
+  }
+  span {
+    color: $text-white;
+  }
+}
