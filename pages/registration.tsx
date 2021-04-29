@@ -40,7 +40,7 @@ function Register({ user, theme }) {
     const newState = { ...state };
     newState[path] = value;
     setState(newState);
-  }
+  };
 
   const handleRegister = () => {
     if (captcha) {
