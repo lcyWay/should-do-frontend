@@ -18,7 +18,53 @@ import { TypeButton } from '../components/Button';
 
 import styles from '../styles/pages/Login.module.scss';
 
-function Login({ theme, user, setUser, setSocket }) {
+const text = [
+  {
+    eng: 'Login successfully',
+    rus: 'Авторизация выполнена успешно'
+  },
+  {
+    eng: 'Account is not activated. Check your email:',
+    rus: 'Пользователь не активирован. Проверьте свою почту:'
+  },
+  {
+    eng: 'Login',
+    rus: 'Авторизация'
+  },
+  {
+    eng: 'Back to Home',
+    rus: 'Вернуться на главную'
+  },
+  {
+    eng: 'email',
+    rus: 'почта'
+  },
+  {
+    eng: 'password',
+    rus: 'пароль'
+  },
+  {
+    eng: 'Login',
+    rus: 'Войти'
+  },
+  {
+    eng: "Don't have an account?",
+    rus: 'У вас нет аккаунта?'
+  },
+  {
+    eng: 'Registration',
+    rus: 'Регистрация'
+  },
+]
+
+const api_massage_codes = {
+  "001": {
+    eng: 'Wrong credentionals',
+    rus: 'Данные введены неправильно'
+  }
+}
+
+function Login({ theme, user, setUser, setSocket, lang }) {
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
   if (user !== null) {
@@ -51,14 +97,14 @@ function Login({ theme, user, setUser, setSocket }) {
             api('login', state).then(async (d) => {
               const data = await d.json();
               if (!d.ok) {
-                alert(data.message)
+                enqueueSnackbar(api_massage_codes[data.message_code][lang], { ...notificationConfig, variant: 'error' });
               } else {
                 const socket = io(socket_server);
                 socket.emit('LOGIN', { name: data.name });
                 if (data.isActivated) {
-                  enqueueSnackbar('Login successfully', { ...notificationConfig, variant: 'success' });
+                  enqueueSnackbar(text[0][lang], { ...notificationConfig, variant: 'success' });
                 } else {
-                  enqueueSnackbar(`Account is not activated. Check your email: ${data.email}`, { ...notificationConfig, variant: 'success' });
+                  enqueueSnackbar(`${text[1][lang]} ${data.email}`, { ...notificationConfig, variant: 'success' });
                 }
                 setSocket(socket);
                 setUser(data);
@@ -72,32 +118,33 @@ function Login({ theme, user, setUser, setSocket }) {
 
   return (
     <div className={clsx('container', 'without_padding', styles.center)}>
-      <Head><title>Login</title></Head>
+      <Head><title>{text[2][lang]}</title></Head>
       <div className={clsx(styles.form_container)}>
         <div className={styles.back}>
           <Link href='/'>
-            <a>Back to Home </a>
+            <a>{text[3][lang]}</a>
           </Link>
         </div>
 
         <div className={styles.forms}>
-          {TypeInput(state.email, (e: string) => handleChange(e, 'email'), theme, 'email')}
-          {TypeInput(state.password, (e: string) => handleChange(e, 'password'), theme, 'password', true)}
+          {TypeInput(state.email, (e: string) => handleChange(e, 'email'), theme, text[4][lang])}
+          {TypeInput(state.password, (e: string) => handleChange(e, 'password'), theme, text[5][lang], true)}
         </div>
 
         <div className={styles.flex_center}>
           <ReCAPTCHA
             sitekey="6LdQRbAaAAAAAJjgWi6ffTYVZi9EjNcnnt5zpre-"
             onChange={() => setCaptcha(true)}
+            hl={lang === 'eng' ? 'en' : 'ru'}
           />
         </div>
 
         <div className={styles.flex_center}>
-          {TypeButton('Login', theme, null, handleLogin)}
+          {TypeButton(text[6][lang], theme, null, handleLogin)}
         </div>
         <div className={styles.flex_center}>
-          <span>Don't have an account?</span>
-          <Link href='/registration'><a><b>Registration</b></a></Link>
+          <span>{text[7][lang]}</span>
+          <Link href='/registration'><a><b>{text[8][lang]}</b></a></Link>
         </div>
       </div>
     </div>

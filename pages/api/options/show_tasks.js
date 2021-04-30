@@ -8,7 +8,7 @@ module.exports = async (req, res) => {
   const user = await collection.findOne({ name });
 
   user.showTasks = !user.showTasks;
-  makeActivity(`${user.name} has ${user.showTasks ? 'opened' : 'hidden'} objectives`, user);
+  makeActivity({ code: '003', value: user.showTasks }, user);
 
   collection
     .updateOne({ name }, { $set: { showTasks: user.showTasks, activity: user.activity } })

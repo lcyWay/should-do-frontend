@@ -17,7 +17,26 @@ import { api } from '../api'
 import styles from '../styles/pages/Users.module.scss'
 import stylesProfile from '../styles/pages/Profile.module.scss'
 
-function users({ theme, users, user }) {
+const text = [
+  {
+    eng: 'Users uploaded',
+    rus: 'Пользователи загружены'
+  },
+  {
+    eng: 'No more users',
+    rus: 'Показаны все пользователи'
+  },
+  {
+    eng: 'Users',
+    rus: 'Пользователи'
+  },
+  {
+    eng: 'Upload more',
+    rus: 'Загрузить ещё'
+  },
+]
+
+function users({ theme, users, user, lang }) {
   const [state, setState] = React.useState<UserType[] | []>(users);
   const [count, setCount] = React.useState(10);
   const [showButton, setShowButton] = React.useState(true);
@@ -31,17 +50,17 @@ function users({ theme, users, user }) {
         const data = await d.json();
         if (d.ok) {
           setState(data);
-          enqueueSnackbar('Users uploaded', { ...notificationConfig, variant: 'success' })
+          enqueueSnackbar(text[0][lang], { ...notificationConfig, variant: 'success' })
         } else {
           setShowButton(false);
-          enqueueSnackbar('No more users', { ...notificationConfig, variant: 'error' })
+          enqueueSnackbar(text[1][lang], { ...notificationConfig, variant: 'error' })
         }
       })
   }
 
   return (
     <div className="container">
-      <Head><title>Users</title></Head>
+      <Head><title>{text[2][lang]}</title></Head>
       {
         state.map(e => {
           const isOnline = user ? ((user.name !== e.name) && e.online) : e.online;
@@ -62,7 +81,7 @@ function users({ theme, users, user }) {
           </a></Link>
         })
       }
-      {showButton && <div className={styles.button_container}>{TypeButton('Upload more', theme, null, handleUpload)}</div>}
+      {showButton && <div className={styles.button_container}>{TypeButton(text[3][lang], theme, null, handleUpload)}</div>}
     </div>
   )
 }

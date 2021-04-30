@@ -14,12 +14,70 @@ import { TypeText } from '../../components/Text';
 
 import styles from '../../styles/pages/Options.module.scss'
 
-function Options({ user, setUser, theme, setTheme }) {
+const text = [
+  {
+    eng: 'Change image',
+    rus: 'Изменить аватар'
+  },
+  {
+    eng: 'Delete image',
+    rus: 'Удалить аватар'
+  },
+  {
+    eng: 'User name',
+    rus: 'Имя пользователя'
+  },
+  {
+    eng: 'Email',
+    rus: 'Почта'
+  },
+  {
+    eng: 'Registration date',
+    rus: 'Дата регистрации'
+  },
+  {
+    eng: {
+      primary: 'Switch to theme "Dark Colors"',
+      dark: 'Switch to theme "Light Colors"'
+    },
+    rus: {
+      primary: 'Сменить тему на "Темные цвета"',
+      dark: 'Сменить тему на "Светлые цвета"'
+    }
+  },
+  {
+    eng: 'Hide objectives from other users',
+    rus: 'Скрыть цели от других пользователей'
+  },
+  {
+    eng: 'Clear profile activity',
+    rus: 'Отчистить активность'
+  },
+  {
+    eng: 'Switch to Russian language',
+    rus: 'Сменить на Русский язык'
+  },
+  {
+    eng: 'Clear',
+    rus: 'Отчистить'
+  },
+  {
+    eng: 'Options',
+    rus: 'Настройки'
+  },
+]
+
+function Options({ user, setUser, theme, setTheme, lang, setLang }) {
+  const [loading, setLoading] = React.useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
   if (user === null) { router.push('/login') }
+
   const switchThemeImage = TypeImage(theme !== 'dark' ? '/moon.svg' : '/sun.svg', 'sun', false, 25);
+  const switchLangImage = TypeImage(lang !== 'eng' ? '/check-box.svg' : '/blank-check-box.svg', 'check', false, 25);
+
   const handleChangeTheme = () => setTheme(theme === 'dark' ? 'primary' : 'dark');
+  const handleChangeLang = () => setLang(lang === 'eng' ? 'rus' : 'eng');
 
   const onInputFile = (e) => {
     const file = e.target.files[0];
@@ -34,6 +92,7 @@ function Options({ user, setUser, theme, setTheme }) {
           reader.readAsDataURL(new Blob([file]));
 
           reader.onload = () => {
+            setLoading(true);
             const imageUrl = reader.result;
             api('options/avatar', { name: user.name, imageUrl })
               .then(async d => {
@@ -44,6 +103,7 @@ function Options({ user, setUser, theme, setTheme }) {
                 } else {
                   enqueueSnackbar('Unexpected error', { ...notificationConfig, variant: 'error' })
                 }
+                setLoading(false);
               })
           }
         }
@@ -52,6 +112,7 @@ function Options({ user, setUser, theme, setTheme }) {
   }
 
   const deleteImage = () => {
+    setLoading(true);
     if (user.imageUrl !== null) {
       api('options/avatar', { name: user.name, imageUrl: null })
         .then(async d => {
@@ -62,11 +123,13 @@ function Options({ user, setUser, theme, setTheme }) {
           } else {
             enqueueSnackbar('Unexpected error', { ...notificationConfig, variant: 'error' })
           }
+          setLoading(false);
         })
     }
   }
 
   const handleSetActivity = () => {
+    setLoading(true);
     api('options/clear_activity', { name: user.name })
       .then(async d => {
         const data = await d.json();
@@ -76,10 +139,12 @@ function Options({ user, setUser, theme, setTheme }) {
         } else {
           enqueueSnackbar('Unexpected error', { ...notificationConfig, variant: 'error' })
         }
+        setLoading(false);
       })
   }
 
   const handleChangeShowTasks = () => {
+    setLoading(true);
     api('options/show_tasks', { name: user.name })
       .then(async d => {
         const data = await d.json();
@@ -89,39 +154,44 @@ function Options({ user, setUser, theme, setTheme }) {
         } else {
           enqueueSnackbar('Unexpected error', { ...notificationConfig, variant: 'error' })
         }
+        setLoading(false);
       })
   }
 
   return (user ? user.isActivated : false) && (
     <div className="container">
-      <Head><title>Options</title></Head>
+      <Head><title>{text[10][lang]}</title></Head>
       <div className={styles.center_container}>
         <div className={styles.image_container}>
           {TypeImage(user.imageUrl || '/user.svg', 'image', true, 150)}
-          {TypeButton('Set image', theme, null, () => document.getElementById('fileInput').click())}
-          {TypeButton('Delete image', theme, null, deleteImage)}
+          {TypeButton(text[0][lang], theme, null, () => !loading && document.getElementById('fileInput').click(), 'small')}
+          {TypeButton(text[1][lang], theme, null, () => !loading && deleteImage(), 'small')}
         </div>
 
         <div className={styles.divider}></div>
 
-        {TypeText(user.name, 'User name')}
-        {TypeText(user.email, 'Email')}
-        {TypeText(dayjs(user.createdAt).format('MM.DD.YYYY hh:mm'), 'Creation date')}
+        {TypeText(user.name, text[2][lang])}
+        {TypeText(user.email, text[3][lang])}
+        {TypeText(dayjs(user.createdAt).format('MM.DD.YYYY hh:mm'), text[4][lang])}
 
         <div className={styles.divider}></div>
 
-        {TypeText(TypeButton(switchThemeImage, theme, null, handleChangeTheme, 'small'), `Switch to theme ${theme !== 'dark' ? 'Dark Colors' : 'Light Colors'}`)}
+        {TypeText(TypeButton(switchThemeImage, theme, null, handleChangeTheme, 'small'), text[5][lang][theme])}
 
         <div className={styles.divider}></div>
 
         {TypeText(TypeButton(
           TypeImage(user.showTasks ? '/blank-check-box.svg' : '/check-box.svg', user.showTasks ? 'hide' : 'show', false, 25),
-          theme, null, handleChangeShowTasks, 'small'), `Hide tasks from other users`
+          theme, null, () => !loading && handleChangeShowTasks(), 'small'), text[6][lang]
         )}
 
         <div className={styles.divider}></div>
 
-        {TypeText(TypeButton('Clear', theme, null, handleSetActivity, 'small'), `Clear profile activity`)}
+        {TypeText(TypeButton(text[9][lang], theme, null, () => !loading && handleSetActivity(), 'small'), text[7][lang])}
+
+        <div className={styles.divider}></div>
+
+        {TypeText(TypeButton(switchLangImage, theme, null, handleChangeLang, 'small'), text[8][lang])}
 
         <input id="fileInput" type="file" onChange={onInputFile} hidden />
       </div>

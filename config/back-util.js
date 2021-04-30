@@ -12,7 +12,7 @@ function makeActivity(title, user) {
     createdAt: new Date(),
     title
   }
-  if (user.activity.length > 14) {
+  if (user.activity.length > 24) {
     user.activity.pop();
     user.activity.unshift(newActiv);
   } else {

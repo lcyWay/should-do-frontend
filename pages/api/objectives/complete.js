@@ -11,7 +11,7 @@ module.exports = async (req, res) => {
   const tasks = [...user.tasks];
   const task = tasks.find(e => e._id == id);
   task.isComplete = true;
-  makeActivity(`${user.name} complete one objective`, user);
+  makeActivity({ code: '004' }, user);
 
   const date = dayjs(new Date()).format('DD.MM');
   if (user.graphData[date]) {

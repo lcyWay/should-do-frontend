@@ -6,7 +6,22 @@ import Link from 'next/link'
 import styles from '../../styles/pages/Profile.module.scss'
 import { TypeImage } from '../Image'
 
-function ProfileHeader({ theme, user }) {
+const text = [
+  {
+    eng: 'Daily tasks',
+    rus: 'Задачи'
+  },
+  {
+    eng: 'Objectives',
+    rus: 'Цели'
+  },
+  {
+    eng: 'Options',
+    rus: 'Настройки'
+  },
+]
+
+function ProfileHeader({ lang, theme, user }) {
   const router = useRouter();
   const path = router.pathname;
 
@@ -27,13 +42,13 @@ function ProfileHeader({ theme, user }) {
             </a>
           </Link>
           <Link href={`/profile/daily/${user.name}`}>
-            <a className={styles[theme]}>Daily tasks</a>
+            <a className={styles[theme]}>{text[0][lang]}</a>
           </Link>
           <Link href={`/profile/objectives/${user.name}`}>
-            <a className={styles[theme]}>Objectives</a>
+            <a className={styles[theme]}>{text[1][lang]}</a>
           </Link>
           <Link href='/profile/options'>
-            <a className={styles[theme]}>Options</a>
+            <a className={styles[theme]}>{text[2][lang]}</a>
           </Link>
         </div>
       </div>

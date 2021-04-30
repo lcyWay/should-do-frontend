@@ -87,6 +87,7 @@
     justify-content: center;
     font-weight: 600;
     margin-top: 20px;
+    text-align: center;
   }
   div:last-child {
     margin-top: 0;
@@ -132,16 +133,18 @@
 }
 
 .footer_block {
-  height: 40px;
   display: flex;
   align-items: center;
 }
 
-.theme_switcher {
-  height: 40px;
+.switchers {
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  &:last-child {
+    margin-top: 10px;
+  }
 }
 
 @keyframes slow-welcome {

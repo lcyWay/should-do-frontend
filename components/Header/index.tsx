@@ -4,9 +4,46 @@ import clsx from 'clsx'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
-import styles from './Header.module.scss'
+import { TypeButton } from '../Button'
 
-function Header({ theme, user, setUser, socket }) {
+import styles from './Header.module.scss'
+import { TypeImage } from '../Image'
+
+const text = [
+  {
+    eng: 'Home',
+    rus: 'Главная'
+  },
+  {
+    eng: 'Users',
+    rus: 'Пользователи'
+  },
+  {
+    eng: 'About me',
+    rus: 'Обо мне'
+  },
+  {
+    eng: 'Profile',
+    rus: 'Профиль'
+  },
+  {
+    eng: 'Login',
+    rus: 'Войти'
+  },
+  {
+    eng: 'Logout',
+    rus: 'Выйти'
+  },
+  {
+    eng: 'Registration',
+    rus: 'Регистрация'
+  },
+]
+
+function Header({ theme, user, setUser, socket, lang }) {
+  const [menuOpen, setMenuOpen] = React.useState(false);
+  const menuImage = TypeImage(theme !== 'dark' ? '/menu-dark.svg' : '/menu.svg', 'menu', false, 25);
+
   const router = useRouter();
   const handleLogout = () => {
     localStorage.removeItem('userdata');
@@ -15,37 +52,43 @@ function Header({ theme, user, setUser, socket }) {
     socket.disconnect();
   }
 
+  const menu = () => <>
+    <Link href='/'>
+      <a>
+        {text[0][lang]}
+      </a>
+    </Link>
+    <Link href='/users'>
+      <a>
+        {text[1][lang]}
+      </a>
+    </Link>
+    <Link href='/about'>
+      <a>
+        {text[2][lang]}
+      </a>
+    </Link>
+  </>
+
   return (
     <div className={clsx(styles.background, styles[theme])}>
       <div className={styles.container}>
-        <div>
-          <Link href='/'>
-            <a>
-              Home
-            </a>
-          </Link>
-          <Link href='/users'>
-            <a>
-              Users
-            </a>
-          </Link>
-          <Link href='/about'>
-            <a>
-              About me
-            </a>
-          </Link>
+        <div className={styles.header}>{menu()}</div>
+        <div className={styles.button}>
+          {TypeButton(menuImage, theme === 'dark' ? theme : null, null, () => setMenuOpen(!menuOpen), 'small')}
         </div>
+        {menuOpen && <div className={clsx(styles.openHeader, styles[`header_${theme}`])}>{menu()}</div>}
         <div>
           <Link href={user ? `/profile/${user.name}` : '/login'}>
-            <a>{user ? 'Profile' : 'Login'}</a>
+            <a>{user ? text[3][lang] : text[4][lang]}</a>
           </Link>
           |
           {user
             ?
-            <span onClick={handleLogout}>Logout</span>
+            <span onClick={handleLogout}>{text[5][lang]}</span>
             :
             <Link href='/registration'>
-              <a>Register</a>
+              <a>{text[6][lang]}</a>
             </Link>
           }
         </div>

@@ -16,7 +16,78 @@ import { api } from '../api';
 
 import styles from '../styles/pages/Login.module.scss'
 
-function Register({ user, theme }) {
+const text = [
+  {
+    eng: 'A confirmation mail will be sent to this email: ',
+    rus: 'Письмо с подтверждением будет отправлено на эту почту: '
+  },
+  {
+    eng: 'Loading...',
+    rus: 'Загрузка...'
+  },
+  {
+    eng: 'Invalid credentionals',
+    rus: 'Некорректно указаны данные'
+  },
+  {
+    eng: 'Username must be without spaces',
+    rus: 'Имя пользователя должно быть без пробелов'
+  },
+  {
+    eng: 'Registration',
+    rus: 'Регистрация'
+  },
+  {
+    eng: 'Back to home',
+    rus: 'Вернуться на главную'
+  },
+  {
+    eng: 'username',
+    rus: 'имя'
+  },
+  {
+    eng: "email",
+    rus: 'почта'
+  },
+  {
+    eng: 'password',
+    rus: 'пароль'
+  },
+  {
+    eng: 'Register',
+    rus: 'Зарегистрироваться'
+  },
+  {
+    eng: <span>A confirmation mail will be sent to this <b>email</b>!</span>,
+    rus: <span>Письмо с подтверждением будет выслано на <b>указанную почту</b>!</span>
+  },
+  {
+    eng: 'Have an account?',
+    rus: 'Уже есть аккаунт?'
+  },
+  {
+    eng: 'Login',
+    rus: 'Войти'
+  },
+]
+
+const api_message_codes = {
+  "001": {
+    eng: 'User with that username already exist',
+    rus: 'Пользователь с таким именем уже существует'
+  },
+  "002": {
+    eng: 'User with that email already exist',
+    rus: 'Пользователь с такой почтой уже существует'
+  },
+  "003": {
+    eng: 'Check your email for complete registration',
+    rus: 'Проверьте свою почту для завершения регистрации'
+  },
+}
+
+
+function Register({ user, theme, lang }) {
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
   if (user !== null) {
@@ -49,62 +120,63 @@ function Register({ user, theme }) {
           .isValid(state)
           .then(function (valid) {
             if (valid) {
-              if (window.confirm('A confirmation mail will be sent to this email: ' + state.email)) {
-                enqueueSnackbar('Loading...', { ...notificationConfig });
+              if (window.confirm(text[0][lang] + state.email)) {
+                enqueueSnackbar(text[1][lang], { ...notificationConfig });
                 api('registration', { name: state.username, password: state.password, email: state.email })
                   .then(async d => {
                     const data = await d.json();
                     if (d.ok) {
-                      enqueueSnackbar(data.message, { ...notificationConfig, variant: 'success' });
+                      enqueueSnackbar(api_message_codes[data.code_message][lang], { ...notificationConfig, variant: 'success' });
                       router.push('/login');
                     } else {
-                      enqueueSnackbar(data.message, { ...notificationConfig, variant: 'error' })
+                      enqueueSnackbar(api_message_codes[data.code_message][lang], { ...notificationConfig, variant: 'error' })
                     }
                   })
               }
             } else {
-              enqueueSnackbar('Invalid credentionals', { ...notificationConfig, variant: 'error' })
+              enqueueSnackbar(text[2][lang], { ...notificationConfig, variant: 'error' })
             }
           });
       } else {
-        enqueueSnackbar('Username must be without spaces ', { ...notificationConfig, variant: 'error' })
+        enqueueSnackbar(text[3][lang], { ...notificationConfig, variant: 'error' })
       }
     }
   }
 
   return (
     <div className={clsx('container', 'without_padding', styles.center)}>
-      <Head><title>Registration</title></Head>
+      <Head><title>{text[4][lang]}</title></Head>
 
       <div className={clsx(styles.form_container)}>
         <div className={styles.back}>
           <Link href='/'>
-            <a>Back to Home </a>
+            <a>{text[5][lang]}</a>
           </Link>
         </div>
 
         <div className={styles.forms}>
-          {TypeInput(state.username, (e: string) => handleChange(e, 'username'), theme, 'username')}
-          {TypeInput(state.email, (e: string) => handleChange(e, 'email'), theme, 'email')}
-          {TypeInput(state.password, (e: string) => handleChange(e, 'password'), theme, 'password', true)}
+          {TypeInput(state.username, (e: string) => handleChange(e, 'username'), theme, text[6][lang])}
+          {TypeInput(state.email, (e: string) => handleChange(e, 'email'), theme, text[7][lang])}
+          {TypeInput(state.password, (e: string) => handleChange(e, 'password'), theme, text[8][lang], true)}
         </div>
 
         <div className={styles.flex_center}>
           <ReCAPTCHA
             sitekey="6LdQRbAaAAAAAJjgWi6ffTYVZi9EjNcnnt5zpre-"
             onChange={() => setCaptcha(true)}
+            hl={lang === 'eng' ? 'en' : 'ru'}
           />
         </div>
 
         <div className={styles.flex_center}>
-          {TypeButton('Register', theme, null, handleRegister)}
+          {TypeButton(text[9][lang], theme, null, handleRegister)}
         </div>
         <div className={styles.flex_center}>
-          <span>A confirmation mail will be sent to this <b>email</b></span>
+          {text[10][lang]}
         </div>
         <div className={styles.flex_center}>
-          <span>Have an account?</span>
-          <Link href='/login'><a><b>Login</b></a></Link>
+          <span>{text[11][lang]}</span>
+          <Link href='/login'><a><b>{text[12][lang]}</b></a></Link>
         </div>
       </div>
     </div>

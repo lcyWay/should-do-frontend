@@ -14,7 +14,7 @@ module.exports = async (req, res) => {
     isComplete: false,
     createdAt: new Date()
   });
-  makeActivity(`${user.name} created new objective`, user);
+  makeActivity({ code: '005' }, user);
 
   collection
     .updateOne({ name }, { $set: { tasks: user.tasks, activity: user.activity } })

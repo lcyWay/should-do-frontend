@@ -15,6 +15,6 @@ module.exports = async (req, res) => {
         r => res.status(200).json(protectUser(userdata))
       )
   } else {
-    res.status(400).json({ message: 'Wrong credentionals' })
+    res.status(400).json({ message_code: '001' })
   }
 }

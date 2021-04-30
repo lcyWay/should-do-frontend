@@ -6,7 +6,8 @@ import styles from './Button.module.scss'
 
 const buttonStyles = {
   primary: styles.primary,
-  dark: styles.dark
+  dark: styles.dark,
+  null: undefined
 };
 const buttonSizes = {
   medium: styles.medium,
@@ -16,7 +17,7 @@ const buttonSizes = {
 
 export const TypeButton = (
   body: string | JSX.Element,
-  style: string,
+  style: string | null,
   link?: string | null,
   onClick?: () => void | null,
   size?: string | null

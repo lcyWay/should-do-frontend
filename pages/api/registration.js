@@ -22,9 +22,9 @@ module.exports = async (req, res) => {
     })
 
     if (isUsedName) {
-      res.status(400).json({ message: 'User with that username already exist' })
+      res.status(400).json({ code_message: '001' })
     } else if (isUsedEmail) {
-      res.status(400).json({ message: 'User with that email already exist' })
+      res.status(400).json({ code_message: '002' })
     } else {
       const newUser = {
         _id: ObjectId(),
@@ -50,7 +50,7 @@ module.exports = async (req, res) => {
         .then(
           async (r) => {
             const email_data = await api_back('send_email', { email, name, link: `https://what-should-i-do.vercel.app/profile/activate/${newUser._id}` });
-            res.status(200).json({ message: 'Check your email for complete registration', email_data })
+            res.status(200).json({ code_message: '003', email_data })
           });
     }
   })

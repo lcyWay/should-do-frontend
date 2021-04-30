@@ -10,9 +10,9 @@ module.exports = async (req, res) => {
 
   if (user) {
     if (user.isActivated) {
-      res.status(201).json({ message: 'User is already activated' })
+      res.status(201).json({ message_code: '001' })
     } else {
-      makeActivity(`${user.name} registered successfully. Welcome!`, user);
+      makeActivity({ code: '001' }, user);
       collection
         .updateOne({ name: user.name }, {
           $set: {
@@ -21,11 +21,11 @@ module.exports = async (req, res) => {
           }
         })
         .then(
-          r => res.status(200).json({ message: 'User activated successfully' }),
-          err => res.status(500).json({ message: 'Error with database' }),
+          r => res.status(200).json({ message_code: '002' }),
+          err => res.status(500).json({ message_code: '004' }),
         );
     }
   } else {
-    res.status(400).json({ message: 'Wrong activation url!' })
+    res.status(400).json({ message_code: '003' })
   }
 }

@@ -8,7 +8,7 @@ module.exports = async (req, res) => {
   const user = await collection.findOne({ name });
 
   user.imageUrl = imageUrl;
-  makeActivity(`${user.name} ${imageUrl === null ? 'deleted' : 'changed'} avatar`, user);
+  makeActivity({ code: '002', value: imageUrl === null ? true : false }, user);
 
   collection
     .updateOne({ name }, { $set: { imageUrl, activity: user.activity } })

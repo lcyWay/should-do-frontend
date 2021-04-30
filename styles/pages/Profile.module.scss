@@ -194,9 +194,9 @@
   }
 }
 
-.online_container {
+.graph {
   display: flex;
-  align-items: center;
+  justify-content: center;
   font-size: 12px;
   @media (min-width: 768px) {
     font-size: 13px;
@@ -204,6 +204,21 @@
   @media (min-width: 1200px) {
     font-size: 14px;
   }
+}
+.last_seen {
+  display: flex;
+  font-size: 12px;
+  @media (min-width: 768px) {
+    font-size: 13px;
+  }
+  @media (min-width: 1200px) {
+    font-size: 14px;
+  }
+}
+.online_container {
+  display: flex;
+  align-items: center;
+  margin-left: 5px;
 }
 .online_icon {
   display: flex;

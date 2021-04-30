@@ -25,7 +25,7 @@ module.exports = async (req, res) => {
   if ((user.todayCompleteTasks == user.dailyTasks.length) && (+d1 != +d2)) {
     user.daysInRow++;
     user.daysInRowDate = date;
-    makeActivity(`${user.name} completed daily tasks`, user);
+    makeActivity({ code: '006' }, user);
   }
 
   collection

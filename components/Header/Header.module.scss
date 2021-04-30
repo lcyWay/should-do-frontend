@@ -54,6 +54,42 @@
   }
 }
 
+.button {
+  display: flex;
+  @media (min-width: 768px) {
+    display: none;
+  }
+}
+.header {
+  display: none;
+  @media (min-width: 768px) {
+    display: inline;
+  }
+}
+.openHeader {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  top: 50px;
+  padding: 10px;
+  z-index: 1000000;
+  animation-name: slow-open;
+  animation-duration: .4s;
+  animation-timing-function: ease-in-out;
+  @media (min-width: 768px) {
+    display: none;
+  }
+}
+
+.header_dark {
+  background: $dark;
+}
+.header_primary {
+  background: white;
+  border-bottom: 1px solid $border-gray;
+  border-right: 1px solid $border-gray;
+}
+
 .primary {
   background: white;
   border-bottom: 1px solid $border-gray;
@@ -69,5 +105,14 @@
   }
   span {
     color: $text-white;
+  }
+}
+
+@keyframes slow-open {
+  from {
+    opacity: 0; 
+  }
+  to {
+    opacity: 1; 
   }
 }

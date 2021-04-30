@@ -15,7 +15,7 @@ module.exports = async (req, res) => {
     isComplete: false,
     lastCompleteDate: new Date(),
   });
-  makeActivity(`${user.name} created new daily task`, user);
+  makeActivity({ code: '007' }, user);
 
   collection
     .updateOne({ name }, { $set: { dailyTasks: user.dailyTasks, activity: user.activity } })
