@@ -65,6 +65,26 @@ const text = [
     eng: 'Options',
     rus: 'Настройки'
   },
+  {
+    eng: 'Success',
+    rus: 'Выполнено'
+  },
+  {
+    eng: 'Unexpected error',
+    rus: 'Неожиданная ошибка'
+  },
+  {
+    eng: 'Only PNG and JPEG image types are allowed',
+    rus: 'Можно загрузить только файлы формата PNG и JPEG'
+  },
+  {
+    eng: 'The image size more than 1 mb',
+    rus: 'Размер изображения больше 1-го мегабайта'
+  },
+  {
+    eng: 'Image uploaded successfully',
+    rus: 'Изображение успешно загружено'
+  },
 ]
 
 function Options({ user, setUser, theme, setTheme, lang, setLang }) {
@@ -79,14 +99,17 @@ function Options({ user, setUser, theme, setTheme, lang, setLang }) {
   const handleChangeTheme = () => setTheme(theme === 'dark' ? 'primary' : 'dark');
   const handleChangeLang = () => setLang(lang === 'eng' ? 'rus' : 'eng');
 
+  const successNotification = () => enqueueSnackbar(text[11][lang], { ...notificationConfig, variant: 'success' })
+  const errorNotification = () => enqueueSnackbar(text[12][lang], { ...notificationConfig, variant: 'error' })
+
   const onInputFile = (e) => {
     const file = e.target.files[0];
     if (file) {
       if (file.type !== 'image/png' && file.type !== 'image/jpeg') {
-        enqueueSnackbar('Only PNG and JPEG image types are allowed', { ...notificationConfig, variant: 'error' })
+        enqueueSnackbar(text[13][lang], { ...notificationConfig, variant: 'error' })
       } else {
         if (file.size > 1000000) {
-          enqueueSnackbar('The image size more than 1 mb', { ...notificationConfig, variant: 'error' })
+          enqueueSnackbar(text[14][lang], { ...notificationConfig, variant: 'error' })
         } else {
           const reader = new FileReader();
           reader.readAsDataURL(new Blob([file]));
@@ -98,10 +121,10 @@ function Options({ user, setUser, theme, setTheme, lang, setLang }) {
               .then(async d => {
                 const data = await d.json();
                 if (d.ok) {
-                  enqueueSnackbar('Image uploaded successfully ', { ...notificationConfig, variant: 'success' })
+                  enqueueSnackbar(text[15][lang], { ...notificationConfig, variant: 'success' })
                   setUser(data)
                 } else {
-                  enqueueSnackbar('Unexpected error', { ...notificationConfig, variant: 'error' })
+                  errorNotification()
                 }
                 setLoading(false);
               })
@@ -112,16 +135,16 @@ function Options({ user, setUser, theme, setTheme, lang, setLang }) {
   }
 
   const deleteImage = () => {
-    setLoading(true);
     if (user.imageUrl !== null) {
+      setLoading(true);
       api('options/avatar', { name: user.name, imageUrl: null })
         .then(async d => {
           const data = await d.json();
           if (d.ok) {
-            enqueueSnackbar('Success', { ...notificationConfig, variant: 'success' })
+            successNotification()
             setUser(data)
           } else {
-            enqueueSnackbar('Unexpected error', { ...notificationConfig, variant: 'error' })
+            errorNotification()
           }
           setLoading(false);
         })
@@ -134,10 +157,10 @@ function Options({ user, setUser, theme, setTheme, lang, setLang }) {
       .then(async d => {
         const data = await d.json();
         if (d.ok) {
-          enqueueSnackbar('Success', { ...notificationConfig, variant: 'success' })
+          successNotification()
           setUser(data)
         } else {
-          enqueueSnackbar('Unexpected error', { ...notificationConfig, variant: 'error' })
+          errorNotification()
         }
         setLoading(false);
       })
@@ -149,10 +172,10 @@ function Options({ user, setUser, theme, setTheme, lang, setLang }) {
       .then(async d => {
         const data = await d.json();
         if (d.ok) {
-          enqueueSnackbar('Success', { ...notificationConfig, variant: 'success' })
+          successNotification()
           setUser(data)
         } else {
-          enqueueSnackbar('Unexpected error', { ...notificationConfig, variant: 'error' })
+          errorNotification()
         }
         setLoading(false);
       })
