@@ -40,8 +40,7 @@ const text = [
   },
 ]
 
-function Header({ theme, user, setUser, socket, lang }) {
-  const [menuOpen, setMenuOpen] = React.useState(false);
+function Header({ theme, user, setUser, socket, lang, showMenu, setShowMenu }) {
   const menuImage = TypeImage(theme !== 'dark' ? '/menu-dark.svg' : '/menu.svg', 'menu', false, 25);
 
   const router = useRouter();
@@ -70,14 +69,20 @@ function Header({ theme, user, setUser, socket, lang }) {
     </Link>
   </>
 
+  const handleCloseMenu = (e) => {
+    if (!e.nativeEvent.path.includes(document.getElementById('show-menu-div'))) {
+      setShowMenu(false);
+    }
+  }
+
   return (
-    <div className={clsx(styles.background, styles[theme])}>
+    <div onClick={handleCloseMenu} className={clsx(styles.background, styles[theme])}>
       <div className={styles.container}>
         <div className={styles.header}>{menu()}</div>
-        <div className={styles.button}>
-          {TypeButton(menuImage, theme === 'dark' ? theme : null, null, () => setMenuOpen(!menuOpen), 'small')}
+        <div id="show-menu-div" className={styles.button}>
+          {TypeButton(menuImage, theme === 'dark' ? theme : null, null, () => setShowMenu(!showMenu), 'small')}
         </div>
-        {menuOpen && <div className={clsx(styles.openHeader, styles[`header_${theme}`])}>{menu()}</div>}
+        {showMenu && <div className={clsx(styles.openHeader, styles[`header_${theme}`])}>{menu()}</div>}
         <div>
           <Link href={user ? `/profile/${user.name}` : '/login'}>
             <a>{user ? text[3][lang] : text[4][lang]}</a>

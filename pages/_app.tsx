@@ -19,6 +19,7 @@ function MyApp(props) {
   const [lang, setLang] = React.useState<string>('eng');
   const [user, setUser] = React.useState<null | UserType | undefined>(undefined);
   const [useSocket, setSocket] = React.useState<any>(false);
+  const [showMenu, setShowMenu] = React.useState(false);
 
   React.useEffect(function () {
     const storageTheme = localStorage.getItem('theme');
@@ -60,18 +61,28 @@ function MyApp(props) {
       height={2}
       options={{ easing: 'ease', speed: 200 }}
     />
-    <Header lang={lang} socket={useSocket} setUser={(e: null) => setUser(e)} user={user} theme={theme} />
-    <ProfileHeader lang={lang} theme={theme} user={user} />
-    <Component
-      setSocket={(d) => setSocket(d)}
-      user={user}
-      setUser={(u: UserType | null) => handleSetUser(u)}
-      theme={theme}
-      setTheme={(type: string) => handleChangeTheme(type)}
+    <Header
+      showMenu={showMenu}
+      setShowMenu={(t) => setShowMenu(t)}
       lang={lang}
-      setLang={(type: string) => handleChangeLang(type)}
-      {...pageProps}
+      socket={useSocket}
+      setUser={(e: null) => setUser(e)}
+      user={user}
+      theme={theme}
     />
+    <div onClick={() => setShowMenu(false)}>
+      <ProfileHeader lang={lang} theme={theme} user={user} />
+      <Component
+        setSocket={(d) => setSocket(d)}
+        user={user}
+        setUser={(u: UserType | null) => handleSetUser(u)}
+        theme={theme}
+        setTheme={(type: string) => handleChangeTheme(type)}
+        lang={lang}
+        setLang={(type: string) => handleChangeLang(type)}
+        {...pageProps}
+      />
+    </div>
   </SnackbarProvider>
 }
 

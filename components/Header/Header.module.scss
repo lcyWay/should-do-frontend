@@ -24,7 +24,7 @@
 
   a {
     margin: 4px;
-    max-width: 110px;
+    max-width: 120px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -73,6 +73,7 @@
   top: 50px;
   padding: 10px;
   z-index: 1000000;
+  font-size: 16px;
   animation-name: slow-open;
   animation-duration: .4s;
   animation-timing-function: ease-in-out;
