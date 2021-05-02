@@ -72,38 +72,42 @@ const api_activity_codes = (user, value) => ({
     rus: `${user.name} успешно зарегистрировал(ась)ся. Приветствуем!`
   },
   "002": {
-    eng: `${user.name} ${value ? 'deleted' : 'changed'} avatar`,
-    rus: `${user.name} ${value ? 'удалил(а)' : 'сменил(а)'} аватар`
+    eng: `${user.name} ${value ? 'deleted' : 'changed'} avatar.`,
+    rus: `${user.name} ${value ? 'удалил(а)' : 'сменил(а)'} аватар.`
   },
   "003": {
-    eng: `${user.name} ${value ? 'opened' : 'hidden'} objectives`,
-    rus: `${user.name} ${value ? 'открыл(а)' : 'скрыл(а)'} свои цели ${value ? 'для' : 'от'} пользователей`
+    eng: `${user.name} ${value ? 'opened' : 'hidden'} objectives.`,
+    rus: `${user.name} ${value ? 'открыл(а)' : 'скрыл(а)'} свои цели ${value ? 'для' : 'от'} пользователей.`
   },
   "004": {
-    eng: `${user.name} complete one objective`,
-    rus: `${user.name} выполнил(а) одну цель`
+    eng: `${user.name} complete one objective.`,
+    rus: `${user.name} выполнил(а) одну цель.`
   },
   "005": {
-    eng: `${user.name} created new objective`,
-    rus: `${user.name} добавил(а) новую цель`
+    eng: `${user.name} created new objective.`,
+    rus: `${user.name} добавил(а) новую цель.`
   },
   "006": {
-    eng: `${user.name} completed daily tasks`,
-    rus: `${user.name} завершил(а) ежедневные задания`
+    eng: `${user.name} completed daily tasks. Well done!`,
+    rus: `${user.name} выполнил(а) все ежедневные задания. Поздравляем!`
   },
   "007": {
-    eng: `${user.name} created new daily task`,
-    rus: `${user.name} добавил(а) новую ежедневную задачу`
+    eng: `${user.name} created new daily task.`,
+    rus: `${user.name} добавил(а) новую ежедневную задачу.`
   }
 })
 
 
 
 function Profile({ theme, profile, user, lang }) {
+  const [profileUser, setProfileUser] = React.useState(profile);
   const [state, useState] = React.useState<TaskType[] | []>(profile.tasks);
   const [loading, setLoading] = React.useState(false);
 
-  if (state.length !== profile.tasks.length) { useState(profile.tasks) }
+  if (profileUser.name !== profile.name) {
+    useState(profile.tasks);
+    setProfileUser(profile);
+  }
   const owner = user ? (user.name === profile.name) : false;
   const isOnline = (profile.online !== null) && !owner;
 

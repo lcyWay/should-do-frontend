@@ -8,7 +8,7 @@ function Graphic(graphData, theme, lang) {
 
   React.useEffect(() => {
     run();
-  }, [])
+  }, [graphData])
 
   function run() {
     const data = [];
