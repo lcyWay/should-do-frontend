@@ -89,6 +89,7 @@ const api_message_codes = {
 
 function Register({ user, theme, lang }) {
   const { enqueueSnackbar } = useSnackbar();
+  const [loading, setLoading] = React.useState(false);
   const router = useRouter();
   if (user !== null) {
     router.push(`/profile/${user.name}`)
@@ -114,6 +115,7 @@ function Register({ user, theme, lang }) {
   };
 
   const handleRegister = () => {
+    setLoading(true);
     if (captcha) {
       if (state.username.split(' ').length < 2) {
         schema
@@ -131,15 +133,22 @@ function Register({ user, theme, lang }) {
                     } else {
                       enqueueSnackbar(api_message_codes[data.code_message][lang], { ...notificationConfig, variant: 'error' })
                     }
+                    setLoading(false);
                   })
+              } else {
+                setLoading(false);
               }
             } else {
+              setLoading(false);
               enqueueSnackbar(text[2][lang], { ...notificationConfig, variant: 'error' })
             }
           });
       } else {
+        setLoading(false);
         enqueueSnackbar(text[3][lang], { ...notificationConfig, variant: 'error' })
       }
+    } else {
+      setLoading(false);
     }
   }
 
@@ -169,7 +178,7 @@ function Register({ user, theme, lang }) {
         </div>
 
         <div className={styles.flex_center}>
-          {TypeButton(text[9][lang], theme, null, handleRegister)}
+          {TypeButton(text[9][lang], theme, null, () => !loading && handleRegister())}
         </div>
         <div className={styles.flex_center}>
           {text[10][lang]}

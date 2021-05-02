@@ -72,6 +72,7 @@ function Login({ theme, user, setUser, setSocket, lang }) {
   }
 
   const [captcha, setCaptcha] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const [state, setState] = React.useState({
     email: '',
     password: ''
@@ -89,6 +90,7 @@ function Login({ theme, user, setUser, setSocket, lang }) {
   }
 
   const handleLogin = async () => {
+    setLoading(true);
     if (captcha) {
       schema
         .isValid(state)
@@ -98,6 +100,7 @@ function Login({ theme, user, setUser, setSocket, lang }) {
               const data = await d.json();
               if (!d.ok) {
                 enqueueSnackbar(api_massage_codes[data.message_code][lang], { ...notificationConfig, variant: 'error' });
+                setLoading(false);
               } else {
                 const socket = io(socket_server);
                 socket.emit('LOGIN', { name: data.name });
@@ -111,8 +114,13 @@ function Login({ theme, user, setUser, setSocket, lang }) {
                 router.push(`/profile/${data.name}`)
               }
             })
+          } else {
+            setLoading(false);
+            enqueueSnackbar(api_massage_codes["001"][lang], { ...notificationConfig, variant: 'error' });
           }
         })
+    } else {
+      setLoading(false)
     }
   }
 
@@ -140,7 +148,7 @@ function Login({ theme, user, setUser, setSocket, lang }) {
         </div>
 
         <div className={styles.flex_center}>
-          {TypeButton(text[6][lang], theme, null, handleLogin)}
+          {TypeButton(text[6][lang], theme, null, () => !loading && handleLogin())}
         </div>
         <div className={styles.flex_center}>
           <span>{text[7][lang]}</span>
