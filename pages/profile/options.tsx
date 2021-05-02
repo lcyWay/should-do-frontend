@@ -79,7 +79,7 @@ const text = [
   },
   {
     eng: 'The image size more than 1 mb',
-    rus: 'Размер изображения больше 1-го мегабайта'
+    rus: 'Размер изображения не должен быть больше 1-го мегабайта'
   },
   {
     eng: 'Image uploaded successfully',
@@ -108,7 +108,7 @@ function Options({ user, setUser, theme, setTheme, lang, setLang }) {
       if (file.type !== 'image/png' && file.type !== 'image/jpeg') {
         enqueueSnackbar(text[13][lang], { ...notificationConfig, variant: 'error' })
       } else {
-        if (file.size > 1000000) {
+        if (file.size > 800000) {
           enqueueSnackbar(text[14][lang], { ...notificationConfig, variant: 'error' })
         } else {
           const reader = new FileReader();
