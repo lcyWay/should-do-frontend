@@ -1,0 +1,26 @@
+{
+  "name": "Task Manager",
+  "theme_color": "#3c3c3c",
+  "background_color": "#e6e6e6",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/right-arrow-128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "/right-arrow-256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    },
+    {
+      "src": "/right-arrow-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
