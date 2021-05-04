@@ -71,7 +71,7 @@ export default function Home({ theme, setTheme, lang, setLang }) {
       <div className={styles.welcome}>
         <div className={styles.animation}>
           <h3>What should I do ?</h3>
-          <p>Next.JS/TypeScript task management web application!</p>
+          <p>Next.JS/TypeScript task management progressive web application!</p>
           {TypeButton(text[1][lang], theme, '/registration')}
         </div>
       </div>
