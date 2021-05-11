@@ -39,6 +39,9 @@ function About({ theme, lang }) {
         <div>- GraphQL</div>
         <div>- CSS, SCSS/SASS</div>
         <div>- Material UI, Semantic UI, React Bootstrap, Materialize</div>
+        <div>- Lodash, RxJs</div>
+        <div>- Service Workers</div>
+        <div>- Jest</div>
 
         <div className={styles.divider}><b>Backend:</b></div>
         <div>- Node.js, Express</div>
@@ -46,13 +49,14 @@ function About({ theme, lang }) {
         <div>- Socket.IO</div>
 
         <div className={styles.divider}><b>Other:</b></div>
-        <div>- Webpack</div>
+        <div>- Webpack, Babel</div>
         <div>- Git</div>
         <div>- Eslint</div>
-        <div>- BEM(CSS)</div>
         <div>- Work experience with Figma, Heroku, Netlify, Vercel</div>
 
         <div className={styles.divider}></div>
+        <div>hh.ru: <a className={styles[theme]} href="https://mytischi.hh.ru/resume/1c30dedcff087d47ab0039ed1f4b73776e3552#key-skills">Резюме Frontend Developer (hh.ru)</a></div>
+        <div>Habr: <a className={styles[theme]} href="https://career.habr.com/carepuw">Career Habr</a></div>
         <div>GitHub: <a className={styles[theme]} href="https://github.com/carepuw">https://github.com/carepuw</a></div>
         <div>Telegram: @carepuw</div>
       </div>
