@@ -1,0 +1,22 @@
+{
+  "navigation.home": "Home",
+  "navigation.users": "Users",
+  "navigation.about": "About me",
+  "home.sign_in": "Get Started",
+  "home.blocks.free_registration": "Free registration",
+  "home.blocks.easy_learn": "Easy to learn",
+  "home.blocks.profile_page": "Convenient and informative profile page",
+  "home.blocks.watch_other": "Watch the progress of other users",
+  "home.made_in": "Made in 2020. Redesigned in 2022.",
+  "home.visit_about_page": "Visit about page",
+  "header.login": "Login",
+  "header.logout": "Logout",
+  "header.profile": "Profile",
+  "header.registration": "Registration",
+  "notification.objectives_complete": "Objective completed",
+  "notification.objectives_create": "Objective created",
+  "notification.objectives_delete": "Objective deleted",
+  "notification.daily_complete": "Daily task completed",
+  "notification.daily_create": "Daily task created",
+  "notification.daily_delete": "Daily task deleted"
+}

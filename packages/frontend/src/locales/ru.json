@@ -1,0 +1,22 @@
+{
+  "navigation.home": "Главная",
+  "navigation.users": "Пользователи",
+  "navigation.about": "Обо мне",
+  "home.sign_in": "Зарегистрироваться",
+  "home.blocks.free_registration": "Бесплатная регистрация",
+  "home.blocks.easy_learn": "Легко освоить",
+  "home.blocks.profile_page": "Удобная и информативная страница профиля",
+  "home.blocks.watch_other": "Наблюдайте за прогрессом других пользователей",
+  "home.made_in": "Создано в 2020. Редизайн в 2022.",
+  "home.visit_about_page": "Посетить страницу \"Обо мне\"",
+  "header.login": "Войти",
+  "header.logout": "Выйти",
+  "header.profile": "Профиль",
+  "header.registration": "Регистрация",
+  "notification.objectives_complete": "Цель выполнена",
+  "notification.objectives_create": "Цель добавлена",
+  "notification.objectives_delete": "Цель удалена",
+  "notification.daily_complete": "Ежедневная задача выполнена",
+  "notification.daily_create": "Ежедневная задача добавлена",
+  "notification.daily_delete": "Ежедневная задача удалена"
+}
