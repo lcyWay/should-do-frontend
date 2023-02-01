@@ -1,103 +1,160 @@
 import React from "react";
 import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import clsx from "clsx";
-
 import Link from "next/link";
 import Head from "next/head";
+import styled from "styled-components";
+import { GetServerSideProps } from "next";
+import relativeTime from "dayjs/plugin/relativeTime";
+import { FormattedMessage, useIntl } from "react-intl";
 
-import { TypeButton } from "../components/Button";
-import { TypeImage } from "../components/Image";
+import { NotificationContext } from "components/Notifications";
 
-import { notificationConfig } from "../components/Alert";
-import { UserType } from "../types";
-import { api } from "../api";
+import Button from "primitives/Button";
 
-import styles from "../styles/pages/Users.module.scss";
-import stylesProfile from "../styles/pages/Profile.module.scss";
+import { initialize } from "utils/initialize";
 
-const text = [
-  {
-    en: "Users uploaded",
-    ru: "Пользователи загружены",
-  },
-  {
-    en: "No more users",
-    ru: "Показаны все пользователи",
-  },
-  {
-    en: "Users",
-    ru: "Пользователи",
-  },
-  {
-    en: "Upload more",
-    ru: "Загрузить ещё",
-  },
-];
+import { UserType } from "types";
+import { apiBeba } from "api";
 
-function users({ theme, users, user, lang }) {
+import { PageProps } from "./_app";
+
+dayjs.extend(relativeTime);
+
+interface UsersInterface extends PageProps {
+  users: UserType[];
+  user: UserType;
+}
+
+function Users({ users, user }: UsersInterface) {
+  const intl = useIntl();
+
+  const { createNotification } = React.useContext(NotificationContext);
+
   const [state, setState] = React.useState<UserType[] | []>(users);
   const [count, setCount] = React.useState(10);
-  const [showButton, setShowButton] = React.useState(true);
-  // const { enqueueSnackbar } = useSnackbar();
-  dayjs.extend(relativeTime);
 
-  const handleUpload = async () => {
+  const [loading, setLoading] = React.useState(false);
+  const [showButton, setShowButton] = React.useState(true);
+
+  const handleUpload = React.useCallback(async () => {
+    if (loading) return;
+    setLoading(true);
     setCount(count + 10);
-    api("users", { count: count + 10 }).then(async (d) => {
-      const data = await d.json();
-      if (d.ok) {
-        setState(data);
-        // enqueueSnackbar(text[0][lang], { ...notificationConfig, variant: 'success' })
-      } else {
-        setShowButton(false);
-        // enqueueSnackbar(text[1][lang], { ...notificationConfig, variant: 'error' })
-      }
-    });
-  };
+
+    const data = await apiBeba("users", { count: count + 10 });
+    setLoading(false);
+
+    if (!data || !data?.ok || !data?.users) {
+      createNotification(intl.formatMessage({ id: "notification.all_users_are_showed" }));
+      setShowButton(false);
+      return;
+    }
+
+    createNotification(intl.formatMessage({ id: "notification.success" }));
+    setState(data?.users);
+  }, [count, createNotification, intl, loading]);
 
   return (
-    <div className="container">
+    <>
       <Head>
-        <title>{text[2][lang]}</title>
+        <title>{intl.formatMessage({ id: "users.title" })}</title>
       </Head>
-      {state.map((e) => {
-        const isOnline = user ? user.name !== e.name && e.online : e.online;
 
-        return (
-          <Link key={e.name} href={`/profile/${e.name}`}>
-            <div className={styles.user_container}>
-              <div>{TypeImage(e.imageUrl || "/user.svg", "avatar", true, 35)}</div>
-              <div className={styles.name}>{e.name}</div>
-              <div className={stylesProfile.online_container}>
-                <div
-                  className={clsx(
-                    stylesProfile.online_icon,
-                    isOnline ? stylesProfile.offline : stylesProfile[`online_${theme}`],
-                  )}
-                ></div>
-                {isOnline ? dayjs(e.online).fromNow() : "online"}
-              </div>
-            </div>
-          </Link>
-        );
-      })}
-      {showButton && (
-        <div className={styles.button_container}>{TypeButton(text[3][lang], theme, null, handleUpload)}</div>
-      )}
-    </div>
+      <Container>
+        {state.map((e) => {
+          const isOnline = user ? user.name !== e.name && e.online : e.online;
+          return (
+            <Link key={e.name} href={`/profile/${e.name}`}>
+              <CardContainer>
+                <CardHeaderContainer>
+                  <img src={e.imageUrl || "/user.svg"} alt="" />
+                  {e.name}
+                </CardHeaderContainer>
+                <OnlineContainer online={!isOnline}>
+                  <OnlineStatus online={!isOnline} />
+                  {isOnline ? dayjs(e.online).fromNow() : "online"}
+                </OnlineContainer>
+              </CardContainer>
+            </Link>
+          );
+        })}
+        {showButton && (
+          <ButtonContainer>
+            <Button onClick={handleUpload}>
+              <FormattedMessage id="users.load_more" />
+            </Button>
+          </ButtonContainer>
+        )}
+      </Container>
+    </>
   );
 }
 
-export async function getServerSideProps(context) {
-  const data = await api("users", { count: 10 })
-    .then((d) => d.json())
-    .then((d) => d);
+const Container = styled("div")`
+  margin: 20px auto;
+  max-width: 1000px;
+  width: calc(100% - 20px);
+  padding: 0 10px;
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+`;
+
+const CardContainer = styled("div")`
+  display: flex;
+  background: ${({ theme }) => theme.layout.primary};
+  border-radius: 8px;
+  border: 1px solid ${({ theme }) => theme.layout.gray};
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+`;
+
+const CardHeaderContainer = styled("div")`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  img {
+    width: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    height: 32px;
+  }
+`;
+
+const OnlineContainer = styled("div")<{ online: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: ${({ online, theme }) => (online ? theme.colors.primary : theme.text.hint)};
+`;
+
+const OnlineStatus = styled("div")<{ online: boolean }>`
+  display: flex;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-top: 2px;
+  background: ${({ theme, online }) => (online ? theme.colors.primary : theme.layout.gray)};
+`;
+
+const ButtonContainer = styled("div")`
+  display: flex;
+  margin-top: 10px;
+  justify-content: center;
+`;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { user } = await initialize(context);
+  const data = await apiBeba("users", { count: 10 });
+
   return {
     props: {
-      users: data,
+      user,
+      users: data ? data?.users || [] : [],
     },
   };
-}
+};
 
-export default users;
+export default React.memo(Users);

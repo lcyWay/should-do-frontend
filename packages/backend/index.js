@@ -26,12 +26,12 @@ const io = require("socket.io")(http, {
   },
 });
 io.on("connection", (socket) => {
-  console.log("socket connect:", socket.id);
   let username;
+  console.log("socket connect:", socket.id);
+
   socket.on("LOGIN", async ({ name }) => {
     const collection = client.db("db").collection("users");
     username = name;
-
     collection.updateOne({ name }, { $set: { online: null } });
   });
 
@@ -44,15 +44,13 @@ io.on("connection", (socket) => {
 
 async function start() {
   await client.connect();
-  http.listen(PORT, () => {
-    console.log(`Example app listening at ${PORT}`);
-  });
+  http.listen(PORT, () => console.log(`Example app listening at ${PORT}`));
 }
 start();
 
 app.post("/send_email", async (req, res) => {
   const { email, name, link } = req.body;
-  let transporter = nodemailer.createTransport({
+  const transporter = nodemailer.createTransport({
     host: "smtp.mail.ru",
     auth: {
       user: process.env.NODEMAILER_USER,

@@ -3,12 +3,11 @@ import dayjs from "dayjs";
 import styled from "styled-components";
 import { GetServerSideProps } from "next";
 import relativeTime from "dayjs/plugin/relativeTime";
-import clsx from "clsx";
 import Head from "next/head";
-import { useIntl } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 
 import { TaskType, UserType } from "types";
-import { api, apiBeba } from "api";
+import { apiBeba } from "api";
 
 import { TypeImage } from "components/Image";
 import TaskCard from "components/Task";
@@ -17,107 +16,59 @@ import { NotificationContext } from "components/Notifications";
 
 import Button from "primitives/Button";
 
-import styles from "styles/pages/Profile.module.scss";
 import { initialize } from "utils/initialize";
 
 import { PageProps } from "pages/_app";
 
 dayjs.extend(relativeTime);
 
-const text = [
-  {
-    en: "Success",
-    ru: "Выполнено",
-  },
-  {
-    en: "Unexpected error",
-    ru: "Неожиданная ошибка",
-  },
-  {
-    en: "Profile",
-    ru: "Профиль",
-  },
-  {
-    en: "User is not activated!",
-    ru: "Пользователь не активирован",
-  },
-  {
-    en: "Create task",
-    ru: "Добавить задачу",
-  },
-  {
-    en: "Progress:",
-    ru: "Прогресс:",
-  },
-  {
-    en: "Last seen:",
-    ru: "Последний визит:",
-  },
-  {
-    en: "online",
-    ru: "в сети",
-  },
-  {
-    en: "Recent Activity:",
-    ru: "Активность:",
-  },
-  {
-    en: "Objectives:",
-    ru: "Цели:",
-  },
-  {
-    en: "Weekly progress: complited objectives",
-    ru: "Еженедельный прогресс: выполнено целей",
-  },
-  {
-    en: "Daily Tasks:",
-    ru: "Едеждевные задачи:",
-  },
-];
-
-const api_activity_codes = (user, value) => ({
-  "001": {
-    en: `${user.name} registered successfully. Welcome!`,
-    ru: `${user.name} успешно зарегистрировал(ась)ся. Приветствуем!`,
-  },
-  "002": {
-    en: `${user.name} ${value ? "deleted" : "changed"} avatar.`,
-    ru: `${user.name} ${value ? "удалил(а)" : "сменил(а)"} аватар.`,
-  },
-  "003": {
-    en: `${user.name} ${value ? "opened" : "hidden"} objectives.`,
-    ru: `${user.name} ${value ? "открыл(а)" : "скрыл(а)"} свои цели ${value ? "для" : "от"} пользователей.`,
-  },
-  "004": {
-    en: `${user.name} complete one objective.`,
-    ru: `${user.name} выполнил(а) одну цель.`,
-  },
-  "005": {
-    en: `${user.name} created new objective.`,
-    ru: `${user.name} добавил(а) новую цель.`,
-  },
-  "006": {
-    en: `${user.name} completed daily tasks. Well done!`,
-    ru: `${user.name} выполнил(а) все ежедневные задания. Поздравляем!`,
-  },
-  "007": {
-    en: `${user.name} created new daily task.`,
-    ru: `${user.name} добавил(а) новую ежедневную задачу.`,
-  },
-});
+// const api_activity_codes = (user: any, value: any) => ({
+//   "001": {
+//     en: `${user.name} registered successfully. Welcome!`,
+//     ru: `${user.name} успешно зарегистрировал(ась)ся. Приветствуем!`,
+//   },
+//   "002": {
+//     en: `${user.name} ${value ? "deleted" : "changed"} avatar.`,
+//     ru: `${user.name} ${value ? "удалил(а)" : "сменил(а)"} аватар.`,
+//   },
+//   "003": {
+//     en: `${user.name} ${value ? "opened" : "hidden"} objectives.`,
+//     ru: `${user.name} ${value ? "открыл(а)" : "скрыл(а)"} свои цели ${
+//       value ? "для" : "от"
+//     } пользователей.`,
+//   },
+//   "004": {
+//     en: `${user.name} complete one objective.`,
+//     ru: `${user.name} выполнил(а) одну цель.`,
+//   },
+//   "005": {
+//     en: `${user.name} created new objective.`,
+//     ru: `${user.name} добавил(а) новую цель.`,
+//   },
+//   "006": {
+//     en: `${user.name} completed daily tasks. Well done!`,
+//     ru: `${user.name} выполнил(а) все ежедневные задания. Поздравляем!`,
+//   },
+//   "007": {
+//     en: `${user.name} created new daily task.`,
+//     ru: `${user.name} добавил(а) новую ежедневную задачу.`,
+//   },
+// });
 
 interface ProfileInterface extends PageProps {
   user: UserType;
   profile: UserType;
 }
 
-function Profile({ theme, profile, user, locale }: ProfileInterface) {
+function Profile({ theme, profile, user }: ProfileInterface) {
   const intl = useIntl();
   const { createNotification } = React.useContext(NotificationContext);
 
   const [profileUser, setProfileUser] = React.useState(profile);
   const [state, setTasks] = React.useState<TaskType[] | []>(profile.tasks);
-  const [dailyTasks, setDailyTasks] = React.useState<TaskType[] | []>(profile.dailyTasks);
+  const [dailyTasks, setDailyTasks] = React.useState<TaskType[] | []>(
+    profile.dailyTasks
+  );
 
   console.log(profile);
 
@@ -129,18 +80,21 @@ function Profile({ theme, profile, user, locale }: ProfileInterface) {
   }, [profile, profileUser]);
 
   const handleDailyComplete = async (id: string) => {
-    const d = await api("daily/complete", { name: user.name, id });
-    const data = await d.json();
-    if (!d.ok) return;
-    createNotification(intl.formatMessage({ id: "notification.daily_complete" }));
-    setDailyTasks(data.dailyTasks);
+    const data = await apiBeba("daily/complete", { name: user.name, id });
+    if (!data) return;
+    setDailyTasks(data);
+    createNotification(
+      intl.formatMessage({ id: "notification.daily_complete" })
+    );
   };
 
   const handleChangeComplete = async (id: string) => {
     const data = await apiBeba(`objectives/complete`, { name: user.name, id });
     if (!data) return;
     setTasks(data);
-    createNotification(intl.formatMessage({ id: "notification.objective_complete" }));
+    createNotification(
+      intl.formatMessage({ id: "notification.objective_complete" })
+    );
   };
 
   const owner = user ? user.name === profile.name : false;
@@ -149,10 +103,10 @@ function Profile({ theme, profile, user, locale }: ProfileInterface) {
   return profile.isActivated ? (
     <>
       <Head>
-        <title>{text[2][locale]}</title>
+        <title>{intl.formatMessage({ id: "profile.title" })}</title>
       </Head>
 
-      <div className="container">
+      <Container>
         <ProfileContainer>
           <div style={{ display: "flex" }}>
             <ProfileImage src={profile.imageUrl || "/user.svg"} />
@@ -164,26 +118,44 @@ function Profile({ theme, profile, user, locale }: ProfileInterface) {
               <ProfileDescription>Description</ProfileDescription>
             </ProfileNameContainer>
           </div>
-          {owner && <Button href={`/profile/daily/${user.name}`}>{text[4][locale]}</Button>}
+          {owner && (
+            <Button href={`/profile/daily/${user.name}`}>
+              <FormattedMessage id="profile.create_task" />
+            </Button>
+          )}
         </ProfileContainer>
 
-        <div className={styles.flex}>
-          <div className={styles.flex_block}>
-            <Title className={styles.text_header}>{text[5][locale]}</Title>
+        <div>
+          <div>
+            <Title>
+              <FormattedMessage id="profile.progress" />
+            </Title>
             <GraphicContainer>
               <Graphic graphData={profile.graphData} theme={theme} />
             </GraphicContainer>
           </div>
-          <div className={styles.flex_block}>
-            <Title className={styles.text_header}>{text[8][locale]}</Title>
+          <div>
+            <Title>
+              <FormattedMessage id="profile.activity" />
+            </Title>
             <ActivityContainer>
               {profile.activity.map((el, i) => (
-                <div className={styles.activ_container} key={i}>
-                  <div>{TypeImage(profile.imageUrl || "/user.svg", "image", true, 25)}</div>
-                  <div className={styles.title}>
-                    {api_activity_codes(profile, el.title.value)[el.title.code][locale]}
+                <div key={i}>
+                  <div>
+                    {TypeImage(
+                      profile.imageUrl || "/user.svg",
+                      "image",
+                      true,
+                      25
+                    )}
                   </div>
-                  <div className={styles.date}>{dayjs(el.createdAt).fromNow()}</div>
+                  <div>
+                    {/* {typeof el.title !== "string" &&
+                      api_activity_codes(profile, el.title.value)[
+                        el.title.code
+                      ][locale]} */}
+                  </div>
+                  <div>{dayjs(el.createdAt).fromNow()}</div>
                 </div>
               ))}
             </ActivityContainer>
@@ -191,32 +163,58 @@ function Profile({ theme, profile, user, locale }: ProfileInterface) {
         </div>
 
         {dailyTasks.length > 0 && (
-          <div className={styles.tasks} style={{ marginTop: 20 }}>
-            <Title className={styles.text_header}>{text[11][locale]}</Title>
+          <div style={{ marginTop: 20 }}>
+            <Title>
+              <FormattedMessage id="profile.daily_tasks" />
+            </Title>
             <TasksContainer>
               {dailyTasks.map((task: TaskType) => (
-                <TaskCard task={task} onComplete={handleDailyComplete} key={task._id} owner={owner} />
+                <TaskCard
+                  task={task}
+                  onComplete={handleDailyComplete}
+                  key={task._id}
+                  owner={owner}
+                />
               ))}
             </TasksContainer>
           </div>
         )}
 
         {profile.showTasks && state.length > 0 && (
-          <div className={styles.tasks} style={{ marginTop: 20, marginBottom: 10 }}>
-            <Title className={styles.text_header}>{text[9][locale]}</Title>
+          <div style={{ marginTop: 20, marginBottom: 10 }}>
+            <Title>
+              <FormattedMessage id="profile.objectives" />
+            </Title>
             <TasksContainer>
               {state.map((task: TaskType, i) => (
-                <TaskCard task={task} onComplete={handleChangeComplete} key={i} owner={owner} />
+                <TaskCard
+                  task={task}
+                  onComplete={handleChangeComplete}
+                  key={i}
+                  owner={owner}
+                />
               ))}
             </TasksContainer>
           </div>
         )}
-      </div>
+      </Container>
     </>
   ) : (
-    <div className={clsx("container", styles.not_activated)}>{text[3][locale]} &#128577;</div>
+    <div>
+      <FormattedMessage id="profile.not_activated" /> &#128577;{" "}
+      {/* user for testing: /das */}
+    </div>
   );
 }
+
+const Container = styled("div")`
+  margin: auto;
+  max-width: 1000px;
+  width: calc(100% - 20px);
+  padding: 0 10px;
+  display: flex;
+  flex-direction: column;
+`;
 
 const ProfileContainer = styled("div")`
   display: flex;
@@ -281,6 +279,7 @@ const ProfileImage = styled("img")`
   width: 40px;
   height: 40px;
   border-radius: 50%;
+  object-fit: cover;
 
   @media (min-width: 768px) {
     width: 80px;
@@ -332,7 +331,8 @@ const OnlineStatus = styled("div")<{ online: boolean }>`
   height: 12px;
   border-radius: 50%;
   margin-top: 2px;
-  background: ${({ theme, online }) => (online ? theme.colors.primary : "#969696")};
+  background: ${({ theme, online }) =>
+    online ? theme.colors.primary : "#969696"};
 
   @media (min-width: 768px) {
     margin-top: 4px;

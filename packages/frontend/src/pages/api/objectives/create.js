@@ -1,25 +1,28 @@
-const mongo = require('../../../config/db');
-const ObjectId = require('mongodb').ObjectID
-import { makeActivity } from '../../../config/back-util'
+import mongo from "../../config/db";
+import { ObjectId } from "mongodb";
+import { makeActivity } from "../../../config/back-util";
 
 module.exports = async (req, res) => {
   const { name, title } = req.body;
-  const db = await mongo.getDB()
-  const collection = await db.collection('users')
+  const db = await mongo.getDB();
+  const collection = await db.collection("users");
   const user = await collection.findOne({ name });
 
   user.tasks.push({
     _id: new ObjectId(),
     title,
     isComplete: false,
-    createdAt: new Date()
+    createdAt: new Date(),
   });
-  makeActivity({ code: '005' }, user);
+  makeActivity({ code: "005" }, user);
 
   collection
-    .updateOne({ name }, { $set: { tasks: user.tasks, activity: user.activity } })
+    .updateOne(
+      { name },
+      { $set: { tasks: user.tasks, activity: user.activity } }
+    )
     .then(
-      r => res.status(200).json(user.tasks),
-      err => res.status(400).json(err),
+      () => res.status(200).json(user.tasks),
+      (err) => res.status(400).json(err)
     );
-}
+};

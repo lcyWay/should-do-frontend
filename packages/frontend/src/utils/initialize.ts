@@ -2,7 +2,7 @@ import cookies from "nookies";
 import jwtDecode from "jwt-decode";
 import { GetServerSidePropsContext } from "next";
 
-import { api } from "api";
+import { apiBeba } from "api";
 
 import { UserType } from "types";
 
@@ -20,8 +20,6 @@ export async function initialize(context: GetServerSidePropsContext): Promise<in
     return { user: null };
   }
 
-  const response = await api("login", state);
-  const user = await response.json();
-
+  const user = await apiBeba("login", state);
   return { user: user || null };
 }

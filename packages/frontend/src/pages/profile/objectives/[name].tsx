@@ -1,5 +1,6 @@
 import React from "react";
 import Head from "next/head";
+import { useIntl } from "react-intl";
 import { GetServerSideProps } from "next";
 
 import { apiBeba } from "api";
@@ -17,10 +18,11 @@ interface ObjectivesInterface extends PageProps {
 }
 
 function Objectives(props: ObjectivesInterface) {
+  const intl = useIntl();
   return (
     <>
       <Head>
-        <title>Objectives</title>
+        <title>{intl.formatMessage({ id: "tasks.objectives_title" })}</title>
       </Head>
       <CreatePage page="objectives" {...props} />
     </>

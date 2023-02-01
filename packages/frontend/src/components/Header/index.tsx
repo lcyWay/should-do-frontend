@@ -8,11 +8,11 @@ import { PageProps } from "pages/_app";
 
 import { UserType } from "types";
 
-interface HeaderInterface {
+interface HeaderInterface extends PageProps {
   user?: UserType;
 }
 
-function Header({ theme, user, toggleTheme, toggleLocale, locale, socket }: PageProps<HeaderInterface>) {
+function Header({ theme, user, toggleTheme, toggleLocale, locale, socket }: HeaderInterface) {
   const { push } = useRouter();
 
   const handleLogout = React.useCallback(() => {
@@ -29,9 +29,6 @@ function Header({ theme, user, toggleTheme, toggleLocale, locale, socket }: Page
         </LinkComponent>
         <LinkComponent href="/users">
           <FormattedMessage id="navigation.users" />
-        </LinkComponent>
-        <LinkComponent href="/about">
-          <FormattedMessage id="navigation.about" />
         </LinkComponent>
       </>
     ),

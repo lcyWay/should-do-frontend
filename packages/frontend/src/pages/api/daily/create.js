@@ -1,6 +1,6 @@
-const mongo = require("../../../config/db");
-const ObjectId = require("mongodb").ObjectID;
-import { makeActivity, protectUser } from "../../../config/back-util";
+import mongo from "../../config/db";
+import { ObjectId } from "mongodb";
+import { makeActivity } from "../../../config/back-util";
 
 module.exports = async (req, res) => {
   const { name, title } = req.body;
@@ -17,8 +17,13 @@ module.exports = async (req, res) => {
   });
   makeActivity({ code: "007" }, user);
 
-  collection.updateOne({ name }, { $set: { dailyTasks: user.dailyTasks, activity: user.activity } }).then(
-    (r) => res.status(200).json(user.dailyTasks),
-    (err) => res.status(400).json(err),
-  );
+  collection
+    .updateOne(
+      { name },
+      { $set: { dailyTasks: user.dailyTasks, activity: user.activity } }
+    )
+    .then(
+      () => res.status(200).json(user.dailyTasks),
+      (err) => res.status(400).json(err)
+    );
 };

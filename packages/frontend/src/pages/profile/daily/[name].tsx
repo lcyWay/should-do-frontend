@@ -1,5 +1,6 @@
 import React from "react";
 import Head from "next/head";
+import { useIntl } from "react-intl";
 import { GetServerSideProps } from "next";
 
 import { UserType } from "types";
@@ -15,10 +16,11 @@ interface DailyInterface extends PageProps {
 }
 
 function Daily(props: DailyInterface) {
+  const intl = useIntl();
   return (
     <>
       <Head>
-        <title>Daily tasks</title>
+        <title>{intl.formatMessage({ id: "tasks.daily_title" })}</title>
       </Head>
       <CreatePage page="daily" {...props} />
     </>

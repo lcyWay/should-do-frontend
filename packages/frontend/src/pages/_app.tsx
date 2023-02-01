@@ -107,6 +107,12 @@ const GlobalStyles = createGlobalStyle`
     text-decoration: none;
     color: ${({ theme }) => theme.text.primary};
   }
+
+  #__next {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
 `;
 
 export default MyApp;

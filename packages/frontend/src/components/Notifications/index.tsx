@@ -64,6 +64,7 @@ const NotificationsContainer = styled("div")`
 
   @media (max-width: 768px) {
     right: 10px;
+    max-width: calc(100vw - 20px);
     align-items: center;
   }
 `;

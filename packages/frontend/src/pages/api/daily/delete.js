@@ -1,5 +1,4 @@
-const mongo = require("../../../config/db");
-import { protectUser } from "../../../config/back-util";
+import mongo from "../../config/db";
 
 module.exports = async (req, res) => {
   const { name, _id } = req.body;
@@ -20,10 +19,10 @@ module.exports = async (req, res) => {
           dailyTasks: user.dailyTasks,
           todayCompleteTasks: user.todayCompleteTasks,
         },
-      },
+      }
     )
     .then(
-      (r) => res.status(200).json(user.dailyTasks),
-      (err) => res.status(400).json(err),
+      () => res.status(200).json(user.dailyTasks),
+      (err) => res.status(400).json(err)
     );
 };

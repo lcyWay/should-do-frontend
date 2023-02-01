@@ -1,146 +1,134 @@
 import React from "react";
-import clsx from "clsx";
 import Link from "next/link";
 import Head from "next/head";
+import { FormattedMessage, useIntl } from "react-intl";
 import { useRouter } from "next/router";
 import jsonwebtoken from "jsonwebtoken";
 import { GetServerSideProps } from "next";
+import styled from "styled-components";
 import ReCAPTCHA from "react-google-recaptcha";
 
 import Button from "primitives/Button";
 import Input from "primitives/Input";
 
-import { api } from "api";
+import { NotificationContext } from "components/Notifications";
+
+import { apiBeba } from "api";
 import { initialize } from "utils/initialize";
 
-import { TypeInput } from "components/Input";
-
-import styles from "styles/pages/Login.module.scss";
-
 import { PageProps } from "./_app";
-import styled from "styled-components";
-
-const text = [
-  {
-    en: "Login successfully",
-    ru: "Авторизация выполнена успешно",
-  },
-  {
-    en: "Account is not activated. Check your email:",
-    ru: "Пользователь не активирован. Проверьте свою почту:",
-  },
-  {
-    en: "Login",
-    ru: "Авторизация",
-  },
-  {
-    en: "Back to Home",
-    ru: "Вернуться на главную",
-  },
-  {
-    en: "email",
-    ru: "почта",
-  },
-  {
-    en: "password",
-    ru: "пароль",
-  },
-  {
-    en: "Login",
-    ru: "Войти",
-  },
-  {
-    en: "Don't have an account?",
-    ru: "У вас нет аккаунта?",
-  },
-  {
-    en: "Registration",
-    ru: "Регистрация",
-  },
-];
-
-const api_massage_codes = {
-  "001": {
-    en: "Wrong credentionals",
-    ru: "Данные введены неправильно",
-  },
-};
 
 function Login({ locale }: PageProps) {
+  const intl = useIntl();
   const router = useRouter();
 
-  const [captcha] = React.useState(true);
+  const { createNotification } = React.useContext(NotificationContext);
+
+  const [captcha, setCaptcha] = React.useState(true);
   const [loading, setLoading] = React.useState(false);
 
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
   const handleLogin = React.useCallback(async () => {
-    if (!captcha) return;
+    if (loading || !captcha || !email || !password) return;
+
     setLoading(true);
-    api("login", { email, password }).then(async (d) => {
-      const data = await d.json();
-      if (!d.ok) {
-        // enqueueSnackbar(api_massage_codes[data.message_code][locale], { ...notificationConfig, variant: "error" });
-        setLoading(false);
-      } else {
-        // const socket = io(socket_server);
-        // socket.emit("LOGIN", { name: data.name });
-        if (data.isActivated) {
-          // enqueueSnackbar(text[0][locale], { ...notificationConfig, variant: "success" });
-        } else {
-          // enqueueSnackbar(`${text[1][locale]} ${data.email}`, { ...notificationConfig, variant: "success" });
+    apiBeba("login", { email, password })
+      .then((data) => {
+        if (!data || !data._id) {
+          createNotification(intl.formatMessage({ id: "notification.user_not_found" }));
+          return;
         }
+
+        createNotification(intl.formatMessage({ id: "notification.success" }));
         document.cookie = `userdata=${jsonwebtoken.sign({ email, password }, "jjjwwwttt")}; path=/`;
         router.push(`/profile/${data.name}`);
-      }
-    });
-  }, [email, password, router, captcha]);
+      })
+      .finally(() => setLoading(false));
+  }, [captcha, loading, email, password, createNotification, intl, router]);
 
   return (
-    <div className={clsx("container", "without_padding", styles.center)}>
+    <>
       <Head>
-        <title>{text[2][locale]}</title>
+        <title>{intl.formatMessage({ id: "login.title" })}</title>
       </Head>
-      <div className={clsx(styles.form_container)}>
-        <div className={styles.back}>
-          <Link href="/">{text[3][locale]}</Link>
-        </div>
+      <Container>
+        <FormContainer>
+          <Title>
+            <FormattedMessage id="login.title" />
+          </Title>
 
-        <FieldsContainer>
-          <TextField>
-            <span>email</span>
-            <Input value={email} onChange={setEmail} />
-          </TextField>
-          <TextField>
-            <span>password</span>
-            <Input value={password} onChange={setPassword} password />
-          </TextField>
-        </FieldsContainer>
+          <FieldsContainer>
+            <TextField>
+              <span>email</span>
+              <Input value={email} onChange={setEmail} />
+            </TextField>
+            <TextField>
+              <span>password</span>
+              <Input value={password} onChange={setPassword} password />
+            </TextField>
+          </FieldsContainer>
 
-        {/* <div className={styles.flex_center}>
           <ReCAPTCHA sitekey="6LdQRbAaAAAAAJjgWi6ffTYVZi9EjNcnnt5zpre-" onChange={() => setCaptcha(true)} hl={locale} />
-        </div> */}
 
-        <div className={styles.flex_center}>
-          <Button onClick={() => !loading && handleLogin()}>{text[6][locale]}</Button>
-        </div>
-        <div className={styles.flex_center}>
-          <span>{text[7][locale]}</span>
-          <Link href="/registration">
-            <b>{text[8][locale]}</b>
-          </Link>
-        </div>
-      </div>
-    </div>
+          <div>
+            <Button onClick={() => !loading && handleLogin()}>
+              <FormattedMessage id="login.login_button" />
+            </Button>
+          </div>
+          <div>
+            <span>
+              <FormattedMessage id="login.no_account" />{" "}
+            </span>
+            <Link href="/registration">
+              <b>
+                <FormattedMessage id="login.registration" />
+              </b>
+            </Link>
+          </div>
+        </FormContainer>
+      </Container>
+    </>
   );
 }
+
+const Container = styled("div")`
+  margin: auto;
+  max-width: 1000px;
+  width: calc(100% - 20px);
+  padding: 0 10px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
+
+const FormContainer = styled("div")`
+  max-width: 440px;
+  width: calc(100% - 40px);
+  margin: 20px auto;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  background: ${({ theme }) => theme.layout.primary};
+  border: 1px solid ${({ theme }) => theme.layout.gray};
+`;
+
+const Title = styled("div")`
+  font-size: 20px;
+  letter-spacing: 1px;
+  text-align: center;
+`;
 
 const FieldsContainer = styled("div")`
   display: flex;
   flex-direction: column;
   gap: 20px;
-  margin: 20px;
+  width: 100%;
 `;
 
 const TextField = styled("div")`

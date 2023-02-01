@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { useIntl } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 
 import { apiBeba } from "api";
 
@@ -19,40 +19,13 @@ import { TaskType, UserType } from "types";
 import styles from "styles/pages/Objectives.module.scss";
 import stylesProfile from "styles/pages/Profile.module.scss";
 
-const text = [
-  {
-    en: "Success",
-    ru: "Выполнено",
-  },
-  {
-    en: "Unexpected error",
-    ru: "Неожиданная ошибка",
-  },
-  {
-    en: "Objectives",
-    ru: "Цели",
-  },
-  {
-    en: "Create task",
-    ru: "Добавить цель",
-  },
-  {
-    en: "Show Delete",
-    ru: "Удалить",
-  },
-  {
-    en: "Objectives:",
-    ru: "Цели:",
-  },
-];
-
 interface CreatePageInterface extends PageProps {
   user: UserType;
   profile: UserType;
   page: "objectives" | "daily";
 }
 
-function CreatePage({ profile, user, page, locale }: CreatePageInterface) {
+function CreatePage({ profile, user, page }: CreatePageInterface) {
   const intl = useIntl();
   const { createNotification } = React.useContext(NotificationContext);
 
@@ -95,11 +68,11 @@ function CreatePage({ profile, user, page, locale }: CreatePageInterface) {
     <div className="container">
       <div className={styles.statistic}>
         <div className={styles.image_container}>{TypeImage(profile.imageUrl || "/user.svg", "image", true, 100)}</div>
-        <Button onClick={() => setShowDelete(!showDelete)}>{text[4][locale]}</Button>
+        <Button onClick={() => setShowDelete(!showDelete)}><FormattedMessage id="tasks.delete_button" /></Button>
       </div>
 
       <div className={stylesProfile.tasks}>
-        <Title>{text[5][locale]}</Title>
+        <Title><FormattedMessage id={`tasks.${page}_title`} /></Title>
         <TasksContainer>
           <InputContainer>
             <Input value={createInputValue} onChange={setCreateInputValue} />

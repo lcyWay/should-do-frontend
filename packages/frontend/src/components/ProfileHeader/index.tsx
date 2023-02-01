@@ -5,8 +5,6 @@ import { useRouter } from "next/router";
 
 import { Locale } from "pages/_app";
 
-import styles from "styles/pages/Profile.module.scss";
-
 import { UserType } from "types";
 import HomeSvg from "svg/HomeSvg";
 
@@ -33,18 +31,27 @@ interface ProfileHeaderInterface {
 function ProfileHeader({ locale, user }: ProfileHeaderInterface) {
   const router = useRouter();
 
-  const path = router.pathname;
-  const userCorrect = user ? user.isActivated : false;
-
-  if (!userCorrect || path === "/" || path === "/about" || path === "/users" || path === "login") return null;
+  if (
+    !user ||
+    !user.isActivated ||
+    router.pathname === "/" ||
+    router.pathname === "/about" ||
+    router.pathname === "/users" ||
+    router.pathname === "login"
+  )
+    return null;
 
   return (
     <Container>
       <LinkComponent href={`/profile/${user.name}`}>
         <HomeSvg />
       </LinkComponent>
-      <LinkComponent href={`/profile/daily/${user.name}`}>{text[0][locale]}</LinkComponent>
-      <LinkComponent href={`/profile/objectives/${user.name}`}>{text[1][locale]}</LinkComponent>
+      <LinkComponent href={`/profile/daily/${user.name}`}>
+        {text[0][locale]}
+      </LinkComponent>
+      <LinkComponent href={`/profile/objectives/${user.name}`}>
+        {text[1][locale]}
+      </LinkComponent>
       <LinkComponent href="/profile/options">{text[2][locale]}</LinkComponent>
     </Container>
   );

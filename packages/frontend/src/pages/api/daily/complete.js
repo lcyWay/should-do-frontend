@@ -1,6 +1,6 @@
-const mongo = require("../../../config/db");
+import mongo from "../../config/db";
 import dayjs from "dayjs";
-import { makeActivity, protectUser } from "../../../config/back-util";
+import { makeActivity } from "../../../config/back-util";
 
 module.exports = async (req, res) => {
   const { name, id } = req.body;
@@ -40,10 +40,10 @@ module.exports = async (req, res) => {
           daysInRowDate: user.daysInRowDate,
           activity: user.activity,
         },
-      },
+      }
     )
     .then(
-      (r) => res.status(200).json(dailyTasks),
-      (err) => res.status(400).json(err),
+      () => res.status(200).json(dailyTasks),
+      (err) => res.status(400).json(err)
     );
 };

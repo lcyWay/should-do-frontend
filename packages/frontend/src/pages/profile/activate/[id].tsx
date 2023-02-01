@@ -1,47 +1,36 @@
 import React from "react";
-// import { useSnackbar } from 'notistack';
+import { GetServerSideProps } from "next";
+import { FormattedMessage } from "react-intl";
 
-import { notificationConfig } from "../../../../components/Alert";
-import { api } from "../../../../api";
+import { api } from "api";
 
-const text = [
-  {
-    en: <p>Authentication complete! Thank you. Now you can Login.</p>,
-    ru: <p>Пользователь активирован! Спасибо. Теперь вы можете выполнить вход в аккаунт.</p>,
-  },
-  {
-    en: <p>In 5 seconds you will be redirected to the main page.</p>,
-    ru: <p>Через 5 секунд вы будете перенаправлены на главную страницу.</p>,
-  },
-];
+// const api_message_code = {
+//   "001": {
+//     en: "User is already activated",
+//     ru: "Пользователь уже активирован",
+//   },
+//   "002": {
+//     en: "User activated successfully",
+//     ru: "Пользователь успешно активирован",
+//   },
+//   "003": {
+//     en: "Wrong activation url!",
+//     ru: "Неправильная ссылка активации",
+//   },
+//   "004": {
+//     en: "Error with database probably",
+//     ru: "Возможно, ошибка в базе данных",
+//   },
+// };
 
-const api_message_code = {
-  "001": {
-    en: "User is already activated",
-    ru: "Пользователь уже активирован",
-  },
-  "002": {
-    en: "User activated successfully",
-    ru: "Пользователь успешно активирован",
-  },
-  "003": {
-    en: "Wrong activation url!",
-    ru: "Неправильная ссылка активации",
-  },
-  "004": {
-    en: "Error with database probably",
-    ru: "Возможно, ошибка в базе данных",
-  },
-};
-
-function index({ res, lang }) {
+function Activate({ res }: { res: any }) {
   // const { enqueueSnackbar } = useSnackbar();
-  const statuses = {
-    200: "success",
-    201: "",
-    400: "error",
-    500: "error",
-  };
+  // const statuses = {
+  //   200: "success",
+  //   201: "",
+  //   400: "error",
+  //   500: "error",
+  // };
   // enqueueSnackbar(api_message_code[res.code][lang], { ...notificationConfig, variant: statuses[res.status] });
   if (res.status == 200) {
     localStorage.removeItem("userdata");
@@ -55,13 +44,13 @@ function index({ res, lang }) {
   }
   return (
     <div className="container">
-      {res.status == 200 && text[0][lang]}
-      {text[1][lang]}
+      {res.status == 200 && <FormattedMessage id="activation.activated" />}
+      {<FormattedMessage id="activation.redirect" />}
     </div>
   );
 }
 
-export async function getServerSideProps(context) {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.query;
   let status;
 
@@ -79,6 +68,6 @@ export async function getServerSideProps(context) {
       },
     },
   };
-}
+};
 
-export default index;
+export default Activate;

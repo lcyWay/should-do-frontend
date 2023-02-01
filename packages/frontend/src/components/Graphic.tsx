@@ -1,18 +1,25 @@
-import dayjs from "dayjs";
 import React from "react";
+import dayjs from "dayjs";
+import styled from "styled-components";
 
-import styles from "../styles/pages/Profile.module.scss";
+import { Theme } from "pages/_app";
 
-function Graphic({ graphData, theme }) {
-  const canvas = React.useRef<HTMLCanvasElement>();
+interface GraphicInterface {
+  graphData: Record<string, number>;
+  theme: Theme;
+}
 
-  const run = React.useCallback(() => {
+function Graphic({ graphData, theme }: GraphicInterface) {
+  const canvas = React.useRef<HTMLCanvasElement | null>(null);
+
+  const drawChart = React.useCallback(() => {
     if (!canvas.current) return;
-    const data = [];
-    for (const key in graphData) {
-      data.push(graphData[key]);
-    }
-    const ctx: CanvasRenderingContext2D = canvas.current.getContext("2d");
+    const ctx = canvas.current.getContext("2d");
+    if (ctx === null) return;
+
+    const data: number[] = [];
+    Object.keys(graphData).forEach(key => data.push(graphData[key]));
+
     const width = canvas.current.clientWidth;
     const height = canvas.current.clientHeight;
     const viewWidth = width * 2;
@@ -23,85 +30,74 @@ function Graphic({ graphData, theme }) {
     canvas.current.width = viewWidth;
     canvas.current.height = viewHeight;
 
-    const [yMax] = getMaxMin();
+    const yMax = Math.max(...data);
     const yRatio = (viewHeight - paddingYsum) / (yMax || 1);
     const xRatio = (viewWidth - 2 * paddingX) / (data.length - 1);
 
-    const dateMas = [];
+    const dateMas: string[] = [];
     for (let i = 0; i < 7; i++) {
       dateMas.unshift(dayjs.unix(dayjs(new Date()).unix() - 86400 * i).format("DD.MM"));
     }
 
-    drawRows();
-    drawColumns();
-    drawData();
-
-    function getMaxMin() {
-      const mas = [];
-      data.forEach((e) => {
-        mas.push(e);
-      });
-      const max = Math.max(...mas);
-      const min = Math.min(...mas);
-      return [max, min];
+    const rowStep = (viewHeight - paddingYsum) / 4;
+    const ifNullYmax = [0, 1, 2, 3, 4];
+    ctx.beginPath();
+    ctx.strokeStyle = theme === "dark" ? "#68676f" : "#e4e4e4";
+    ctx.textAlign = "end";
+    ctx.fillStyle = theme === "dark" ? "#e6e6e6" : "#3c3c3c";
+    ctx.font = "normal 20px Inter";
+    for (let i = 0; i < 5; i++) {
+      const y = viewHeight - paddingYbottom - rowStep * i;
+      const num = i * rowStep * (yMax / (viewHeight - paddingYsum));
+      const text = yMax === 0 ? ifNullYmax[i] : +num.toFixed(4) % 1 == 0 ? num.toFixed(0) : num.toFixed(2);
+      ctx.fillText(`${text}`, paddingX - 8, y + 8);
+      ctx.moveTo(paddingX, y);
+      ctx.lineTo(viewWidth - paddingX, y);
     }
+    ctx.stroke();
+    ctx.closePath();
 
-    function drawRows() {
-      const step = (viewHeight - paddingYsum) / 4;
-      const ifNullYmax = [0, 1, 2, 3, 4];
-      ctx.beginPath();
-      ctx.strokeStyle = theme === "dark" ? "#68676f" : "#e4e4e4";
-      ctx.textAlign = "end";
-      ctx.fillStyle = theme === "dark" ? "#e6e6e6" : "#3c3c3c";
-      ctx.font = "normal 20px Inter";
-      for (let i = 0; i < 5; i++) {
-        const y = viewHeight - paddingYbottom - step * i;
-        const num = i * step * (yMax / (viewHeight - paddingYsum));
-        const text = yMax === 0 ? ifNullYmax[i] : +num.toFixed(4) % 1 == 0 ? num.toFixed(0) : num.toFixed(2);
-        ctx.fillText(`${text}`, paddingX - 8, y + 8);
-        ctx.moveTo(paddingX, y);
-        ctx.lineTo(viewWidth - paddingX, y);
-      }
-      ctx.stroke();
-      ctx.closePath();
+    const columnStep = (viewWidth - paddingX * 2) / 6;
+    ctx.beginPath();
+    ctx.font = "normal 20px Inter";
+    ctx.textAlign = "center";
+    for (let i = 0; i < 7; i++) {
+      const x = paddingX + columnStep * i;
+      ctx.fillText(dateMas[i], x, viewHeight - 25);
     }
+    ctx.stroke();
+    ctx.closePath();
 
-    function drawColumns() {
-      const step = (viewWidth - paddingX * 2) / 6;
-      ctx.beginPath();
-      ctx.font = "normal 20px Inter";
-      ctx.textAlign = "center";
-      for (let i = 0; i < 7; i++) {
-        const x = paddingX + step * i;
-        ctx.fillText(dateMas[i], x, viewHeight - 25);
-      }
-      ctx.stroke();
-      ctx.closePath();
-    }
-
-    function drawData() {
-      ctx.beginPath();
-      ctx.lineWidth = 4;
-      ctx.strokeStyle = "#7c7ce4";
-      data.forEach((y, i) => {
-        ctx.lineTo(paddingX + i * xRatio, viewHeight - paddingYbottom - y * yRatio);
-      });
-      ctx.stroke();
-      ctx.closePath();
-    }
+    ctx.beginPath();
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = "#7c7ce4";
+    data.forEach((y, i) => {
+      ctx.lineTo(paddingX + i * xRatio, viewHeight - paddingYbottom - y * yRatio);
+    });
+    ctx.stroke();
+    ctx.closePath();
   }, [graphData, theme]);
 
   React.useEffect(() => {
-    run();
-    window.addEventListener("resize", run);
-    return () => window.removeEventListener("resize", run);
-  }, [run]);
+    drawChart();
+    window.addEventListener("resize", drawChart);
+    return () => window.removeEventListener("resize", drawChart);
+  }, [drawChart]);
 
   return (
-    <div className={styles.canvas_container}>
+    <CanvasContainer>
       <canvas ref={canvas}></canvas>
-    </div>
+    </CanvasContainer>
   );
 }
 
-export default Graphic;
+const CanvasContainer = styled("div")`
+  display: flex;
+  width: 100%;
+
+  canvas {
+    width: 100%;
+  }
+`;
+
+export default React.memo(Graphic);

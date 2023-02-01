@@ -1,18 +1,18 @@
 import React from "react";
 import Head from "next/head";
 import Link from "next/link";
-import clsx from "clsx";
 import { GetServerSideProps } from "next";
 import { FormattedMessage } from "react-intl";
 import styled, { keyframes } from "styled-components";
-
-import { TypeImage } from "components/Image";
 
 import Button from "primitives/Button";
 
 import { initialize } from "utils/initialize";
 
-import styles from "styles/pages/Home.module.scss";
+import BookSvg from "svg/home/BookSvg";
+import RegistrationSvg from "svg/home/RegistrationSvg";
+import ReportSvg from "svg/home/ReportSvg";
+import WatchSvg from "svg/home/WatchSvg";
 
 import { PageProps } from "./_app";
 
@@ -23,71 +23,60 @@ function Home({ theme }: PageProps) {
         <title>Tasks Manager</title>
       </Head>
 
-      <div className={styles.welcome}>
-        <div className={styles.welcomeLayout} style={{ filter: theme === "dark" ? "brightness(0.28)" : "none" }} />
-        <MainImageShadow />
-        <div className={styles.animation}>
-          <h3>What should I do ?</h3>
-          <p>Next.JS/TypeScript task management progressive web application!</p>
-          <Button href="/registration">
-            <FormattedMessage id="home.sign_in" />
-          </Button>
-        </div>
-        <LinksContainer>
-          <LinkButton href="https://github.com/lcyWay" target="_blank">
-            <img src="/icons/github.svg" alt="" />
-            GitHub
-          </LinkButton>
-          <LinkButton href="https://hh.ru" target="_blank">
-            <img src="/icons/hh.svg" alt="" />
-            HeadHunter
-          </LinkButton>
-        </LinksContainer>
-      </div>
+      <PageContainer>
+        <WelcomeLayoutContainer>
+          <WelcomeLayoutImage isDarkTheme={theme === "dark"} />
+          <WelcomeLayoutText>
+            <h3>What should I do ?</h3>
+            <p>Next.JS/TypeScript task management progressive web application!</p>
+            <Button href="/registration">
+              <FormattedMessage id="home.sign_in" />
+            </Button>
+          </WelcomeLayoutText>
+          <LinksContainer>
+            <LinkButton href="https://github.com/lcyWay" target="_blank">
+              <img src="/icons/github.svg" alt="" />
+              GitHub
+            </LinkButton>
+            <LinkButton href="https://hh.ru" target="_blank">
+              <img src="/icons/hh.svg" alt="" />
+              HeadHunter
+            </LinkButton>
+          </LinksContainer>
+        </WelcomeLayoutContainer>
 
-      <div className="container">
-        <div className={styles.divider}></div>
-
-        <div className={styles.grid}>
-          <div className={clsx(styles.grid_block)}>
-            <div>{TypeImage("/registration.svg", "registration", false, 60)}</div>
-            <div>
+        <div className="container">
+          <InfoBlockContainter>
+            <InfoBlock>
+              <RegistrationSvg />
               <FormattedMessage id="home.blocks.free_registration" />
-            </div>
-          </div>
-          <div className={clsx(styles.grid_block)}>
-            <div>{TypeImage("/book.svg", "learn", false, 60)}</div>
-            <div>
+            </InfoBlock>
+            <InfoBlock>
+              <BookSvg />
               <FormattedMessage id="home.blocks.easy_learn" />
-            </div>
-          </div>
-          <div className={clsx(styles.grid_block)}>
-            <div>{TypeImage("/report.svg", "profile", false, 60)}</div>
-            <div>
+            </InfoBlock>
+            <InfoBlock>
+              <ReportSvg />
               <FormattedMessage id="home.blocks.profile_page" />
-            </div>
-          </div>
-          <div className={clsx(styles.grid_block)}>
-            <div>{TypeImage("/watch.svg", "watch", false, 60)}</div>
-            <div>
+            </InfoBlock>
+            <InfoBlock>
+              <WatchSvg />
               <FormattedMessage id="home.blocks.watch_other" />
+            </InfoBlock>
+          </InfoBlockContainter>
+
+          <FooterContainer>
+            <div>
+              <FormattedMessage id="home.made_in" />
             </div>
-          </div>
+            <Link href="/users">
+              <b>
+                <FormattedMessage id="home.visit_users_page" />
+              </b>
+            </Link>
+          </FooterContainer>
         </div>
-
-        <div className={styles.divider} />
-
-        <div className={styles.footer}>
-          <div className={styles.footer_block}>
-            <FormattedMessage id="home.made_in" />
-          </div>
-          <Link href="/about">
-            <b>
-              <FormattedMessage id="home.visit_about_page" />
-            </b>
-          </Link>
-        </div>
-      </div>
+      </PageContainer>
     </>
   );
 }
@@ -99,6 +88,93 @@ const showAnimation = keyframes`
   to {
     opacity: 1;
   }
+`;
+
+const welcomeAnimation = keyframes`
+  from {
+    opacity: 0;
+    top: -100px;
+  }
+  to {
+    opacity: 1;
+    top: 0;
+  }
+`;
+
+const WelcomeLayoutContainer = styled("div")`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  max-width: 1920px;
+  height: 400px;
+  position: relative;
+  border-bottom: 1px solid ${({ theme }) => theme.layout.gray};
+
+  @media (min-width: 768px) {
+    height: 550px;
+  }
+
+  @media (min-width: 1200px) {
+    height: 700px;
+  }
+`;
+
+const WelcomeLayoutImage = styled("div")<{ isDarkTheme: boolean }>`
+  display: flex;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  filter: ${({ isDarkTheme }) => (isDarkTheme ? "brightness(0.28)" : "none")};
+  background-image: url("/662957.png");
+`;
+
+const WelcomeLayoutText = styled("div")`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  animation: ${welcomeAnimation} 1s ease-in-out;
+  cursor: default;
+
+  p {
+    font-size: 14px;
+    text-align: center;
+    margin: 0;
+    color: ${({ theme }) => theme.text.hint};
+    margin: 10px 10px 20px;
+  }
+
+  h3 {
+    font-size: 28px;
+    margin: 0;
+  }
+
+  @media (min-width: 768px) {
+    h3 {
+      font-size: 38px;
+    }
+    p {
+      font-size: 16px;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    h3 {
+      font-size: 48px;
+    }
+    p {
+      font-size: 18px;
+    }
+  }
+`;
+
+const PageContainer = styled("div")`
+  background: ${({ theme }) => theme.layout.primary};
 `;
 
 const LinksContainer = styled("div")`
@@ -126,18 +202,56 @@ const LinkButton = styled(Link)`
   cursor: pointer;
 `;
 
-const MainImageShadow = styled("div")`
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 0) 0%,
-    rgba(0, 0, 0, 0) 50%,
-    ${({ theme }) => theme.layout.secondary} 100%
-  );
+const InfoBlockContainter = styled("div")`
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin-top: 22px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid ${({ theme }) => theme.layout.gray};
+
+  @media (min-width: 768px) {
+    display: grid;
+    grid-template-columns: 48% 48%;
+    column-gap: 4%;
+    row-gap: 32px;
+  }
+`;
+
+const InfoBlock = styled("div")`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+
+  svg {
+    width: 60px;
+    height: auto;
+    fill: ${({ theme }) => theme.text.primary};
+  }
+`;
+
+const FooterContainer = styled("div")`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  margin-top: 32px;
+  margin-bottom: 16px;
+  padding: 0px 10px;
+
+  b {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+
+  @media (min-width: 768px) {
+    font-size: 13px;
+  }
+
+  @media (min-width: 1200px) {
+    font-size: 14px;
+  }
 `;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
