@@ -35,6 +35,6 @@ export type TaskType = {
 
 export type ActivityType = {
   _id: string;
-  title: string;
+  title: string | { code: string };
   createdAt: Date | string;
 };

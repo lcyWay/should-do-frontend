@@ -13,8 +13,10 @@ import Input from "primitives/Input";
 
 import { NotificationContext } from "components/Notifications";
 
-import { apiBeba } from "api";
 import { initialize } from "utils/initialize";
+
+import { googleApiKey } from "config";
+import { apiBeba } from "api";
 
 import { PageProps } from "./_app";
 
@@ -24,7 +26,7 @@ function Login({ locale }: PageProps) {
 
   const { createNotification } = React.useContext(NotificationContext);
 
-  const [captcha, setCaptcha] = React.useState(true);
+  const [captcha, setCaptcha] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
   const [email, setEmail] = React.useState("");
@@ -70,7 +72,7 @@ function Login({ locale }: PageProps) {
             </TextField>
           </FieldsContainer>
 
-          <ReCAPTCHA sitekey="6LdQRbAaAAAAAJjgWi6ffTYVZi9EjNcnnt5zpre-" onChange={() => setCaptcha(true)} hl={locale} />
+          <ReCAPTCHA sitekey={googleApiKey} onChange={() => setCaptcha(true)} hl={locale} />
 
           <div>
             <Button onClick={() => !loading && handleLogin()}>

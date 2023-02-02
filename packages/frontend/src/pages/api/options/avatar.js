@@ -1,4 +1,4 @@
-import mongo from "../../config/db";
+import mongo from "../../../config/db";
 import { makeActivity, protectUser } from "../../../config/back-util";
 
 module.exports = async (req, res) => {
@@ -8,7 +8,7 @@ module.exports = async (req, res) => {
   const user = await collection.findOne({ name });
 
   user.imageUrl = imageUrl;
-  makeActivity({ code: "002", value: imageUrl === null ? true : false }, user);
+  makeActivity(imageUrl === null ? { code: "0021" } : { code: "0022" }, user);
 
   collection
     .updateOne({ name }, { $set: { imageUrl, activity: user.activity } })

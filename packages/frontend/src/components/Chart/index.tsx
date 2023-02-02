@@ -4,12 +4,12 @@ import styled from "styled-components";
 
 import { Theme } from "pages/_app";
 
-interface GraphicInterface {
+interface ChartInterface {
   graphData: Record<string, number>;
   theme: Theme;
 }
 
-function Graphic({ graphData, theme }: GraphicInterface) {
+function Chart({ graphData, theme }: ChartInterface) {
   const canvas = React.useRef<HTMLCanvasElement | null>(null);
 
   const drawChart = React.useCallback(() => {
@@ -18,7 +18,7 @@ function Graphic({ graphData, theme }: GraphicInterface) {
     if (ctx === null) return;
 
     const data: number[] = [];
-    Object.keys(graphData).forEach(key => data.push(graphData[key]));
+    Object.keys(graphData).forEach((key) => data.push(graphData[key]));
 
     const width = canvas.current.clientWidth;
     const height = canvas.current.clientHeight;
@@ -100,4 +100,4 @@ const CanvasContainer = styled("div")`
   }
 `;
 
-export default React.memo(Graphic);
+export default React.memo(Chart);

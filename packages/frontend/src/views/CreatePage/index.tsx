@@ -2,22 +2,18 @@ import React from "react";
 import styled from "styled-components";
 import { FormattedMessage, useIntl } from "react-intl";
 
-import { apiBeba } from "api";
-
-import { PageProps } from "pages/_app";
-
 import Button from "primitives/Button";
 import Checkbox from "primitives/Checkbox";
 import Input from "primitives/Input";
 
-import { TypeImage } from "components/Image";
 import TaskCard from "components/Task";
 import { NotificationContext } from "components/Notifications";
 
+import { apiBeba } from "api";
+
 import { TaskType, UserType } from "types";
 
-import styles from "styles/pages/Objectives.module.scss";
-import stylesProfile from "styles/pages/Profile.module.scss";
+import { PageProps } from "pages/_app";
 
 interface CreatePageInterface extends PageProps {
   user: UserType;
@@ -35,7 +31,10 @@ function CreatePage({ profile, user, page }: CreatePageInterface) {
 
   const handleCreate = React.useCallback(async () => {
     if (createInputValue === "") return;
-    const data = await apiBeba(page + "/create", { name: user.name, title: createInputValue });
+    const data = await apiBeba(page + "/create", {
+      name: user.name,
+      title: createInputValue,
+    });
     if (!data) return;
     createNotification(intl.formatMessage({ id: `notification.${page}_create` }));
     setCreateInputValue("");
@@ -44,12 +43,15 @@ function CreatePage({ profile, user, page }: CreatePageInterface) {
 
   const handleDelete = React.useCallback(
     async (id: string) => {
-      const data = await apiBeba(page + "/delete", { name: user.name, _id: id });
+      const data = await apiBeba(page + "/delete", {
+        name: user.name,
+        _id: id,
+      });
       if (!data) return;
       createNotification(intl.formatMessage({ id: `notification.${page}_delete` }));
       setTasks(data);
     },
-    [createNotification, intl, user, page],
+    [createNotification, intl, user, page]
   );
 
   const handleChangeComplete = React.useCallback(
@@ -59,20 +61,24 @@ function CreatePage({ profile, user, page }: CreatePageInterface) {
       createNotification(intl.formatMessage({ id: `notification.${page}_complete` }));
       setTasks(data);
     },
-    [createNotification, intl, user, page],
+    [createNotification, intl, user, page]
   );
 
   if (!user.isActivated) return null;
 
   return (
-    <div className="container">
-      <div className={styles.statistic}>
-        <div className={styles.image_container}>{TypeImage(profile.imageUrl || "/user.svg", "image", true, 100)}</div>
-        <Button onClick={() => setShowDelete(!showDelete)}><FormattedMessage id="tasks.delete_button" /></Button>
-      </div>
+    <Container>
+      <HeaderContainer>
+        <img src={profile.imageUrl || "/icons/user.svg"} alt="" />
+        <Button onClick={() => setShowDelete(!showDelete)}>
+          <FormattedMessage id="tasks.delete_button" />
+        </Button>
+      </HeaderContainer>
 
-      <div className={stylesProfile.tasks}>
-        <Title><FormattedMessage id={`tasks.${page}_title`} /></Title>
+      <div>
+        <Title>
+          <FormattedMessage id={`tasks.${page}_title`} />
+        </Title>
         <TasksContainer>
           <InputContainer>
             <Input value={createInputValue} onChange={setCreateInputValue} />
@@ -89,9 +95,35 @@ function CreatePage({ profile, user, page }: CreatePageInterface) {
           ))}
         </TasksContainer>
       </div>
-    </div>
+    </Container>
   );
 }
+
+const Container = styled("div")`
+  margin: 0 auto;
+  max-width: 1000px;
+  width: calc(100% - 20px);
+  padding: 0 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px 0;
+`;
+
+const HeaderContainer = styled("div")`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 640px;
+  width: 100%;
+  margin: 0 auto;
+
+  img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+  }
+`;
 
 const InputContainer = styled("div")`
   display: flex;

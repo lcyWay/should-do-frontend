@@ -1,4 +1,4 @@
-import mongo from "../../config/db";
+import mongo from "../../../config/db";
 import dayjs from "dayjs";
 import { makeActivity } from "../../../config/back-util";
 

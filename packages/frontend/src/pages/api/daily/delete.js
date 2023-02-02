@@ -1,4 +1,4 @@
-import mongo from "../../config/db";
+import mongo from "../../../config/db";
 
 module.exports = async (req, res) => {
   const { name, _id } = req.body;

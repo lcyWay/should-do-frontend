@@ -1,4 +1,4 @@
-import mongo from "../../config/db";
+import mongo from "../../../config/db";
 
 import { protectUser, makeActivity } from "../../../config/back-util";
 
@@ -9,7 +9,7 @@ module.exports = async (req, res) => {
   const user = await collection.findOne({ name });
 
   user.showTasks = !user.showTasks;
-  makeActivity({ code: "003", value: user.showTasks }, user);
+  makeActivity(user.showTasks ? { code: "0031" } : { code: "0032" }, user);
 
   collection
     .updateOne(

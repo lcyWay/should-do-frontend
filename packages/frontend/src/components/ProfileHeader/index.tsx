@@ -2,40 +2,23 @@ import React from "react";
 import Link from "next/link";
 import styled from "styled-components";
 import { useRouter } from "next/router";
+import { FormattedMessage } from "react-intl";
 
-import { Locale } from "pages/_app";
-
-import { UserType } from "types";
 import HomeSvg from "svg/HomeSvg";
 
-const text = [
-  {
-    en: "Daily tasks",
-    ru: "Задачи",
-  },
-  {
-    en: "Objectives",
-    ru: "Цели",
-  },
-  {
-    en: "Options",
-    ru: "Настройки",
-  },
-];
+import { UserType } from "types";
 
 interface ProfileHeaderInterface {
-  locale: Locale;
   user?: UserType;
 }
 
-function ProfileHeader({ locale, user }: ProfileHeaderInterface) {
+function ProfileHeader({ user }: ProfileHeaderInterface) {
   const router = useRouter();
 
   if (
     !user ||
     !user.isActivated ||
     router.pathname === "/" ||
-    router.pathname === "/about" ||
     router.pathname === "/users" ||
     router.pathname === "login"
   )
@@ -47,19 +30,21 @@ function ProfileHeader({ locale, user }: ProfileHeaderInterface) {
         <HomeSvg />
       </LinkComponent>
       <LinkComponent href={`/profile/daily/${user.name}`}>
-        {text[0][locale]}
+        <FormattedMessage id="tasks.daily_title" />
       </LinkComponent>
       <LinkComponent href={`/profile/objectives/${user.name}`}>
-        {text[1][locale]}
+        <FormattedMessage id="tasks.objectives_title" />
       </LinkComponent>
-      <LinkComponent href="/profile/options">{text[2][locale]}</LinkComponent>
+      <LinkComponent href="/profile/options">
+        <FormattedMessage id="options.title" />
+      </LinkComponent>
     </Container>
   );
 }
 
 const Container = styled("div")`
   display: flex;
-  margin: auto;
+  margin: 0 auto;
   max-width: 1000px;
   width: calc(100% - 20px);
   height: calc(100% - 20px);

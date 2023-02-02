@@ -1,4 +1,4 @@
-import mongo from "../../config/db";
+import mongo from "../../../config/db";
 
 import { protectUser } from "../../../config/back-util";
 

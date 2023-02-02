@@ -7,7 +7,7 @@ class MyDocument extends Document {
       <Html>
         <Head>
           <link rel="manifest" href="/manifest.json" />
-          <link rel="icon" href="/right-arrow-512.png" />
+          <link rel="icon" href="/logo_128.png" />
         </Head>
         <body>
           <Main />

@@ -4,6 +4,8 @@ import styled from "styled-components";
 import { useRouter } from "next/router";
 import { FormattedMessage } from "react-intl";
 
+import MenuSvg from "svg/MenuSvg";
+
 import { PageProps } from "pages/_app";
 
 import { UserType } from "types";
@@ -21,26 +23,19 @@ function Header({ theme, user, toggleTheme, toggleLocale, locale, socket }: Head
     push("/");
   }, [push, socket]);
 
-  const menu = React.useMemo(
-    () => (
-      <>
-        <LinkComponent href="/">
-          <FormattedMessage id="navigation.home" />
-        </LinkComponent>
-        <LinkComponent href="/users">
-          <FormattedMessage id="navigation.users" />
-        </LinkComponent>
-      </>
-    ),
-    [],
-  );
-
   return (
     <HeaderContainer>
       <HeaderContent>
-        <NavigationContainer hideOnMobile>{menu}</NavigationContainer>
+        <NavigationContainer hideOnMobile>
+          <LinkComponent href="/">
+            <FormattedMessage id="navigation.home" />
+          </LinkComponent>
+          <LinkComponent href="/users">
+            <FormattedMessage id="navigation.users" />
+          </LinkComponent>
+        </NavigationContainer>
         <MenuButton>
-          <img style={{ width: 18, height: 18 }} src={theme !== "dark" ? "/menu-dark.svg" : "/menu.svg"} />
+          <MenuSvg />
         </MenuButton>
         <NavigationContainer>
           <NavigationComponent onClick={toggleLocale}>
@@ -113,6 +108,10 @@ const MenuButton = styled("div")`
   display: flex;
   padding: 0 10px;
   align-items: center;
+
+  svg {
+    fill: ${({ theme }) => theme.text.primary};
+  }
 
   @media (min-width: 768px) {
     display: none;

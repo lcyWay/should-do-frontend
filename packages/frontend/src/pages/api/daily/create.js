@@ -1,4 +1,4 @@
-import mongo from "../../config/db";
+import mongo from "../../../config/db";
 import { ObjectId } from "mongodb";
 import { makeActivity } from "../../../config/back-util";
 

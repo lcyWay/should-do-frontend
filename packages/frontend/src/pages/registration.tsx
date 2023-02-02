@@ -14,6 +14,8 @@ import Button from "primitives/Button";
 import Input from "primitives/Input";
 
 import { initialize } from "utils/initialize";
+
+import { googleApiKey } from "config";
 import { apiBeba } from "api";
 
 import { PageProps } from "./_app";
@@ -39,7 +41,7 @@ function Register({ locale }: PageProps) {
       newState[path] = value;
       setState(newState);
     },
-    [state],
+    [state]
   );
 
   const handleRegister = React.useCallback(async () => {
@@ -86,26 +88,18 @@ function Register({ locale }: PageProps) {
             </TextField>
           </FieldsContainer>
 
-          <div>
-            <ReCAPTCHA
-              sitekey="6LdQRbAaAAAAAJjgWi6ffTYVZi9EjNcnnt5zpre-"
-              onChange={() => setCaptcha(true)}
-              hl={locale}
-            />
-          </div>
+          <ReCAPTCHA sitekey={googleApiKey} onChange={() => setCaptcha(true)} hl={locale} />
 
           <div>
             <Button onClick={handleRegister}>
               <FormattedMessage id="registration.registration_button" />
             </Button>
           </div>
-          <div>
+          <div style={{ textAlign: "center" }}>
             <FormattedMessage id="registration.confirmation_hint" />
           </div>
           <div>
-            <span>
-              <FormattedMessage id="registration.have_an_account" />{" "}
-            </span>
+            <FormattedMessage id="registration.have_an_account" />{" "}
             <Link href="/login">
               <b>
                 <FormattedMessage id="registration.login" />

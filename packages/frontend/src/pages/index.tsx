@@ -45,7 +45,7 @@ function Home({ theme }: PageProps) {
           </LinksContainer>
         </WelcomeLayoutContainer>
 
-        <div className="container">
+        <Container>
           <InfoBlockContainter>
             <InfoBlock>
               <RegistrationSvg />
@@ -65,6 +65,8 @@ function Home({ theme }: PageProps) {
             </InfoBlock>
           </InfoBlockContainter>
 
+          <Divider />
+
           <FooterContainer>
             <div>
               <FormattedMessage id="home.made_in" />
@@ -75,7 +77,7 @@ function Home({ theme }: PageProps) {
               </b>
             </Link>
           </FooterContainer>
-        </div>
+        </Container>
       </PageContainer>
     </>
   );
@@ -129,7 +131,7 @@ const WelcomeLayoutImage = styled("div")<{ isDarkTheme: boolean }>`
   top: 0;
   bottom: 0;
   filter: ${({ isDarkTheme }) => (isDarkTheme ? "brightness(0.28)" : "none")};
-  background-image: url("/662957.png");
+  background-image: url("/home_layout.png");
 `;
 
 const WelcomeLayoutText = styled("div")`
@@ -177,6 +179,23 @@ const PageContainer = styled("div")`
   background: ${({ theme }) => theme.layout.primary};
 `;
 
+const Container = styled("div")`
+  margin: 0 auto;
+  max-width: 1000px;
+  width: calc(100% - 20px);
+  padding: 0 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px 0;
+`;
+
+const Divider = styled("div")`
+  height: 1px;
+  width: 100%;
+  background: ${({ theme }) => theme.layout.gray};
+`;
+
 const LinksContainer = styled("div")`
   display: flex;
   position: absolute;
@@ -206,9 +225,6 @@ const InfoBlockContainter = styled("div")`
   display: flex;
   flex-direction: column;
   gap: 32px;
-  margin-top: 22px;
-  padding-bottom: 30px;
-  border-bottom: 1px solid ${({ theme }) => theme.layout.gray};
 
   @media (min-width: 768px) {
     display: grid;
@@ -237,8 +253,6 @@ const FooterContainer = styled("div")`
   flex-direction: column;
   gap: 4px;
   font-size: 12px;
-  margin-top: 32px;
-  margin-bottom: 16px;
   padding: 0px 10px;
 
   b {

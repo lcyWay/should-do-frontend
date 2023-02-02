@@ -67,7 +67,7 @@ function Users({ users, user }: UsersInterface) {
             <Link key={e.name} href={`/profile/${e.name}`}>
               <CardContainer>
                 <CardHeaderContainer>
-                  <img src={e.imageUrl || "/user.svg"} alt="" />
+                  <img src={e.imageUrl || "/icons/user.svg"} alt="" />
                   {e.name}
                 </CardHeaderContainer>
                 <OnlineContainer online={!isOnline}>

@@ -1,21 +1,18 @@
 import React from "react";
 import dayjs from "dayjs";
 import Head from "next/head";
+import styled from "styled-components";
 import { GetServerSideProps } from "next";
 import { FormattedMessage, useIntl } from "react-intl";
-
-import { api } from "../../api";
 
 import Button from "primitives/Button";
 import Checkbox from "primitives/Checkbox";
 
-import { TypeImage } from "../../components/Image";
-import { TypeText } from "../../components/Text";
-
-import styles from "../../styles/pages/Options.module.scss";
+import { apiBeba } from "api";
 import { initialize } from "utils/initialize";
-import { PageProps } from "pages/_app";
+
 import { UserType } from "types";
+import { PageProps } from "pages/_app";
 
 interface OptionsInteface extends PageProps {
   user: UserType;
@@ -24,10 +21,12 @@ interface OptionsInteface extends PageProps {
 function Options({ user }: OptionsInteface) {
   const intl = useIntl();
 
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
+
   const [loading, setLoading] = React.useState(false);
   const [userData, setUserData] = React.useState(user);
 
-  const onInputFile = React.useCallback(
+  const handleFileInputChange = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       if (!e.target.files) return;
       const file = e.target.files[0];
@@ -37,134 +36,173 @@ function Options({ user }: OptionsInteface) {
       const reader = new FileReader();
       reader.readAsDataURL(new Blob([file]));
 
-      reader.onload = () => {
+      reader.onload = async () => {
         setLoading(true);
         const imageUrl = reader.result;
-        api("options/avatar", { name: userData.name, imageUrl }).then(
-          async (d) => {
-            const data = await d.json();
-            if (d.ok) {
-              // enqueueSnackbar(text[15][lang], { ...notificationConfig, variant: 'success' })
-              setUserData(data);
-            } else {
-              // errorNotification()
-            }
-            setLoading(false);
-          }
-        );
+        const data = await apiBeba("options/avatar", { name: userData.name, imageUrl });
+        if (data) setUserData(data);
+        setLoading(false);
       };
     },
     [userData]
   );
 
-  const deleteImage = () => {
-    if (userData.imageUrl !== null) {
-      setLoading(true);
-      api("options/avatar", { name: userData.name, imageUrl: null }).then(
-        async (d) => {
-          const data = await d.json();
-          if (d.ok) {
-            // successNotification()
-            setUserData(data);
-          } else {
-            // errorNotification()
-          }
-          setLoading(false);
-        }
-      );
-    }
-  };
-
-  const handleSetActivity = async () => {
+  const handleImageDelete = React.useCallback(async () => {
     if (loading) return;
+    if (userData.imageUrl === null) return;
     setLoading(true);
-    const d = await api("options/clear_activity", { name: userData.name });
-    const data = await d.json();
-    if (d.ok) {
-      // successNotification()
-      setUserData(data);
-    } else {
-      // errorNotification()
-    }
+    const data = await apiBeba("options/avatar", { name: userData.name, imageUrl: null });
+    if (data) setUserData(data);
     setLoading(false);
-  };
+  }, [loading, userData]);
 
-  const handleChangeShowTasks = async () => {
-    if (loading) return;
-    setLoading(true);
-    const d = await api("options/show_tasks", { name: userData.name });
-    const data = await d.json();
-    if (d.ok) {
-      // successNotification()
-      setUserData(data);
-    } else {
-      // errorNotification()
-    }
-    setLoading(false);
-  };
+  const handleActivityClear = React.useCallback(async () => {
+    const data = await apiBeba("options/clear_activity", { name: userData.name });
+    if (!data || typeof data !== "object" || data === null) return;
+    setUserData(data);
+  }, [userData]);
+
+  const handleTasksVisibilityChange = React.useCallback(async () => {
+    const data = await apiBeba("options/show_tasks", { name: userData.name });
+    if (!data || typeof data !== "object" || data === null) return;
+    setUserData(data);
+  }, [userData]);
+
+  const handleImageChangeButtonClick = React.useCallback(() => {
+    if (loading || inputRef.current === null) return;
+    inputRef.current.click();
+  }, [loading]);
 
   return (
-    <div className="container">
+    <>
       <Head>
         <title>{intl.formatMessage({ id: "options.title" })}</title>
       </Head>
-      <div className={styles.center_container}>
-        <div className={styles.image_container}>
-          {TypeImage(userData.imageUrl || "/user.svg", "image", true, 150)}
-          <Button
-            onClick={() =>
-              !loading && document.getElementById("fileInput")!.click()
-            }
-          >
-            <FormattedMessage id="options.change_image" />
-          </Button>
-          <Button onClick={() => !loading && deleteImage()}>
-            <FormattedMessage id="options.delete_image" />
-          </Button>
-        </div>
+      <Container>
+        <AvatarBlockContainer>
+          <img src={userData.imageUrl || "/icons/user.svg"} alt="" />
+          <AvatarButtonsContainer>
+            <Button onClick={handleImageChangeButtonClick}>
+              <FormattedMessage id="options.change_image" />
+            </Button>
+            <Button onClick={handleImageDelete}>
+              <FormattedMessage id="options.delete_image" />
+            </Button>
+          </AvatarButtonsContainer>
+        </AvatarBlockContainer>
 
-        <div className={styles.divider}></div>
+        <DataContainer>
+          <div>
+            <TextRow>
+              <div>
+                <FormattedMessage id="options.username" />
+              </div>
+              {userData.name}
+            </TextRow>
+            <TextRow>
+              <div>
+                <FormattedMessage id="options.email" />
+              </div>
+              {userData.email}
+            </TextRow>
+            <TextRow>
+              <div>
+                <FormattedMessage id="options.registration_date" />
+              </div>
+              {dayjs(userData.createdAt).format("MM.DD.YYYY hh:mm")}
+            </TextRow>
+          </div>
 
-        {TypeText(userData.name, <FormattedMessage id="options.username" />)}
-        {TypeText(userData.email, <FormattedMessage id="options.email" />)}
-        {TypeText(
-          dayjs(userData.createdAt).format("MM.DD.YYYY hh:mm"),
-          <FormattedMessage id="options.registration_date" />
-        )}
+          <Divider />
 
-        <div className={styles.divider}></div>
+          <TextRow>
+            <div>
+              <FormattedMessage id="options.visibility" />
+            </div>
+            <Checkbox value={!userData.showTasks} asyncOnChange={handleTasksVisibilityChange} />
+          </TextRow>
 
-        {TypeText(
-          <Checkbox
-            value={!userData.showTasks}
-            asyncOnChange={handleChangeShowTasks}
-          />,
-          <FormattedMessage id="options.visibility" />
-        )}
+          <Divider />
 
-        <div className={styles.divider}></div>
+          <TextRow>
+            <div>
+              <FormattedMessage id="options.clear_activity" />
+            </div>
+            <Checkbox value={userData.activity.length === 0} asyncOnChange={handleActivityClear} />
+          </TextRow>
+        </DataContainer>
 
-        {TypeText(
-          <Checkbox
-            value={userData.activity.length === 0}
-            asyncOnChange={handleSetActivity}
-          />,
-          <FormattedMessage id="options.clear_activity" />
-        )}
-
-        <div className={styles.divider}></div>
-
-        <input
-          id="fileInput"
-          type="file"
-          accept="image/*"
-          onChange={onInputFile}
-          hidden
-        />
-      </div>
-    </div>
+        <input ref={inputRef} type="file" accept="image/*" onChange={handleFileInputChange} hidden />
+      </Container>
+    </>
   );
 }
+
+const Container = styled("div")`
+  margin: 0 auto;
+  max-width: 1000px;
+  width: calc(100% - 20px);
+  padding: 0 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px 0;
+`;
+
+const AvatarBlockContainer = styled("div")`
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+
+  img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+  }
+`;
+
+const AvatarButtonsContainer = styled("div")`
+  display: flex;
+  gap: 10px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+`;
+
+const DataContainer = styled("div")`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  background: ${({ theme }) => theme.layout.primary};
+  border: 1px solid ${({ theme }) => theme.layout.gray};
+  border-radius: 4px;
+`;
+
+const Divider = styled("div")`
+  height: 1px;
+  width: 100%;
+  background: ${({ theme }) => theme.layout.gray};
+`;
+
+const TextRow = styled("div")`
+  width: 100%;
+  max-width: 300px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+
+  div {
+    font-size: 14px;
+  }
+
+  @media (max-width: 768px) {
+    max-width: 440px;
+  }
+`;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { user } = await initialize(context);

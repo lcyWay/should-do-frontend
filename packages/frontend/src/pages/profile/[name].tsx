@@ -9,9 +9,8 @@ import { FormattedMessage, useIntl } from "react-intl";
 import { TaskType, UserType } from "types";
 import { apiBeba } from "api";
 
-import { TypeImage } from "components/Image";
 import TaskCard from "components/Task";
-import Graphic from "components/Graphic";
+import Chart from "components/Chart";
 import { NotificationContext } from "components/Notifications";
 
 import Button from "primitives/Button";
@@ -21,39 +20,6 @@ import { initialize } from "utils/initialize";
 import { PageProps } from "pages/_app";
 
 dayjs.extend(relativeTime);
-
-// const api_activity_codes = (user: any, value: any) => ({
-//   "001": {
-//     en: `${user.name} registered successfully. Welcome!`,
-//     ru: `${user.name} успешно зарегистрировал(ась)ся. Приветствуем!`,
-//   },
-//   "002": {
-//     en: `${user.name} ${value ? "deleted" : "changed"} avatar.`,
-//     ru: `${user.name} ${value ? "удалил(а)" : "сменил(а)"} аватар.`,
-//   },
-//   "003": {
-//     en: `${user.name} ${value ? "opened" : "hidden"} objectives.`,
-//     ru: `${user.name} ${value ? "открыл(а)" : "скрыл(а)"} свои цели ${
-//       value ? "для" : "от"
-//     } пользователей.`,
-//   },
-//   "004": {
-//     en: `${user.name} complete one objective.`,
-//     ru: `${user.name} выполнил(а) одну цель.`,
-//   },
-//   "005": {
-//     en: `${user.name} created new objective.`,
-//     ru: `${user.name} добавил(а) новую цель.`,
-//   },
-//   "006": {
-//     en: `${user.name} completed daily tasks. Well done!`,
-//     ru: `${user.name} выполнил(а) все ежедневные задания. Поздравляем!`,
-//   },
-//   "007": {
-//     en: `${user.name} created new daily task.`,
-//     ru: `${user.name} добавил(а) новую ежедневную задачу.`,
-//   },
-// });
 
 interface ProfileInterface extends PageProps {
   user: UserType;
@@ -66,11 +32,7 @@ function Profile({ theme, profile, user }: ProfileInterface) {
 
   const [profileUser, setProfileUser] = React.useState(profile);
   const [state, setTasks] = React.useState<TaskType[] | []>(profile.tasks);
-  const [dailyTasks, setDailyTasks] = React.useState<TaskType[] | []>(
-    profile.dailyTasks
-  );
-
-  console.log(profile);
+  const [dailyTasks, setDailyTasks] = React.useState<TaskType[] | []>(profile.dailyTasks);
 
   React.useEffect(() => {
     if (profileUser.name === profile.name) return;
@@ -83,18 +45,14 @@ function Profile({ theme, profile, user }: ProfileInterface) {
     const data = await apiBeba("daily/complete", { name: user.name, id });
     if (!data) return;
     setDailyTasks(data);
-    createNotification(
-      intl.formatMessage({ id: "notification.daily_complete" })
-    );
+    createNotification(intl.formatMessage({ id: "notification.daily_complete" }));
   };
 
   const handleChangeComplete = async (id: string) => {
     const data = await apiBeba(`objectives/complete`, { name: user.name, id });
     if (!data) return;
     setTasks(data);
-    createNotification(
-      intl.formatMessage({ id: "notification.objective_complete" })
-    );
+    createNotification(intl.formatMessage({ id: "notification.objective_complete" }));
   };
 
   const owner = user ? user.name === profile.name : false;
@@ -109,7 +67,7 @@ function Profile({ theme, profile, user }: ProfileInterface) {
       <Container>
         <ProfileContainer>
           <div style={{ display: "flex" }}>
-            <ProfileImage src={profile.imageUrl || "/user.svg"} />
+            <ProfileImage src={profile.imageUrl || "/icons/user.svg"} />
             <ProfileNameContainer>
               <ProfileName>
                 <b>{profile.name}</b>
@@ -125,95 +83,80 @@ function Profile({ theme, profile, user }: ProfileInterface) {
           )}
         </ProfileContainer>
 
-        <div>
-          <div>
+        <DataContainer>
+          <DataBlock>
             <Title>
               <FormattedMessage id="profile.progress" />
             </Title>
-            <GraphicContainer>
-              <Graphic graphData={profile.graphData} theme={theme} />
-            </GraphicContainer>
-          </div>
-          <div>
+            <ChartContainer>
+              <Chart graphData={profile.graphData} theme={theme} />
+            </ChartContainer>
+          </DataBlock>
+          <DataBlock>
             <Title>
               <FormattedMessage id="profile.activity" />
             </Title>
             <ActivityContainer>
-              {profile.activity.map((el, i) => (
-                <div key={i}>
-                  <div>
-                    {TypeImage(
-                      profile.imageUrl || "/user.svg",
-                      "image",
-                      true,
-                      25
+              {profile.activity.map((activity, i) => (
+                <ActivityMessage key={i}>
+                  <ActivityMessageInfo>
+                    <img src={profile.imageUrl || "/icons/user.svg"} alt="" />
+                    {typeof activity.title === "string" ? (
+                      activity.title
+                    ) : (
+                      <FormattedMessage id={"profile.activity." + activity.title.code} />
                     )}
-                  </div>
-                  <div>
-                    {/* {typeof el.title !== "string" &&
-                      api_activity_codes(profile, el.title.value)[
-                        el.title.code
-                      ][locale]} */}
-                  </div>
-                  <div>{dayjs(el.createdAt).fromNow()}</div>
-                </div>
+                  </ActivityMessageInfo>
+                  <ActivityMessageDate>{dayjs(activity.createdAt).fromNow()}</ActivityMessageDate>
+                </ActivityMessage>
               ))}
             </ActivityContainer>
-          </div>
-        </div>
+          </DataBlock>
+        </DataContainer>
 
         {dailyTasks.length > 0 && (
-          <div style={{ marginTop: 20 }}>
+          <CardsContainer>
             <Title>
               <FormattedMessage id="profile.daily_tasks" />
             </Title>
             <TasksContainer>
               {dailyTasks.map((task: TaskType) => (
-                <TaskCard
-                  task={task}
-                  onComplete={handleDailyComplete}
-                  key={task._id}
-                  owner={owner}
-                />
+                <TaskCard task={task} onComplete={handleDailyComplete} key={task._id} owner={owner} />
               ))}
             </TasksContainer>
-          </div>
+          </CardsContainer>
         )}
 
         {profile.showTasks && state.length > 0 && (
-          <div style={{ marginTop: 20, marginBottom: 10 }}>
+          <CardsContainer>
             <Title>
               <FormattedMessage id="profile.objectives" />
             </Title>
             <TasksContainer>
               {state.map((task: TaskType, i) => (
-                <TaskCard
-                  task={task}
-                  onComplete={handleChangeComplete}
-                  key={i}
-                  owner={owner}
-                />
+                <TaskCard task={task} onComplete={handleChangeComplete} key={i} owner={owner} />
               ))}
             </TasksContainer>
-          </div>
+          </CardsContainer>
         )}
       </Container>
     </>
   ) : (
-    <div>
-      <FormattedMessage id="profile.not_activated" /> &#128577;{" "}
-      {/* user for testing: /das */}
-    </div>
+    <NotActivatedContainer>
+      <FormattedMessage id="profile.not_activated" /> &#128577; {/* user for testing: /das */}
+    </NotActivatedContainer>
   );
 }
 
 const Container = styled("div")`
-  margin: auto;
+  margin: 0 auto;
   max-width: 1000px;
   width: calc(100% - 20px);
   padding: 0 10px;
   display: flex;
   flex-direction: column;
+  gap: 20px;
+  padding: 20px 0;
 `;
 
 const ProfileContainer = styled("div")`
@@ -287,9 +230,27 @@ const ProfileImage = styled("img")`
   }
 `;
 
-const GraphicContainer = styled("div")`
+const DataContainer = styled("div")`
   display: flex;
-  height: 100%;
+  gap: 20px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+`;
+
+const DataBlock = styled("div")`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 10px;
+  height: 400px;
+`;
+
+const ChartContainer = styled("div")`
+  display: flex;
+  flex: 1;
+  overflow: hidden;
   padding: 10px;
   border: 1px solid ${({ theme }) => theme.layout.gray};
   border-radius: 4px;
@@ -302,7 +263,9 @@ const ActivityContainer = styled("div")`
   border-radius: 4px;
   background: ${({ theme }) => theme.layout.primary};
   overflow-y: auto;
-  height: calc(100% - 38px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 
   @media (min-width: 768px) {
     height: calc(100% - 40px);
@@ -321,8 +284,44 @@ const ActivityContainer = styled("div")`
   }
 `;
 
+const ActivityMessage = styled("div")`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+  }
+`;
+
+const ActivityMessageInfo = styled("div")`
+  display: flex;
+  gap: 10px;
+  font-size: 14px;
+  align-items: center;
+`;
+
+const ActivityMessageDate = styled("div")`
+  white-space: nowrap;
+  font-size: 12px;
+  color: ${({ theme }) => theme.text.hint};
+`;
+
 const Title = styled("div")`
+  font-size: 16px;
+  font-weight: 600;
+  padding-bottom: 8px;
   border-bottom: 1px solid ${({ theme }) => theme.layout.gray};
+
+  @media (min-width: 768px) {
+    font-size: 18px;
+  }
+  @media (min-width: 1200px) {
+    font-size: 20px;
+  }
 `;
 
 const OnlineStatus = styled("div")<{ online: boolean }>`
@@ -331,18 +330,28 @@ const OnlineStatus = styled("div")<{ online: boolean }>`
   height: 12px;
   border-radius: 50%;
   margin-top: 2px;
-  background: ${({ theme, online }) =>
-    online ? theme.colors.primary : "#969696"};
+  background: ${({ theme, online }) => (online ? theme.colors.primary : "#969696")};
 
   @media (min-width: 768px) {
     margin-top: 4px;
   }
 `;
 
+const CardsContainer = styled("div")`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
 const TasksContainer = styled("div")`
   display: flex;
   flex-direction: column;
   gap: 10px;
+`;
+
+const NotActivatedContainer = styled("div")`
+  margin: auto;
+  text-align: center;
 `;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {

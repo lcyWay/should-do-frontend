@@ -2,6 +2,7 @@
   "name": "my-mongodb-api",
   "version": 2,
   "env": {
-    "MONGODB_URI": "@my-mongodb-uri"
+    "MONGODB_URI": "@my-mongodb-uri",
+    "NEXT_PUBLIC_GOOGLE_API_KEY": "@google_api_key"
   }
 }
