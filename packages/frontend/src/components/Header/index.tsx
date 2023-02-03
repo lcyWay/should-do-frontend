@@ -7,8 +7,9 @@ import { FormattedMessage } from "react-intl";
 import MenuSvg from "svg/MenuSvg";
 
 import { PageProps } from "pages/_app";
-
 import { UserType } from "types";
+
+import ModalMenu from "./ModalMenu";
 
 interface HeaderInterface extends PageProps {
   user?: UserType;
@@ -17,11 +18,17 @@ interface HeaderInterface extends PageProps {
 function Header({ theme, user, toggleTheme, toggleLocale, locale, socket }: HeaderInterface) {
   const { push } = useRouter();
 
+  const [menuVisibility, setMenuVisibility] = React.useState(false);
+
+  const handleMenuOpen = React.useCallback(() => setMenuVisibility(true), []);
+  const handleMenuClose = React.useCallback(() => setMenuVisibility(false), []);
+
   const handleLogout = React.useCallback(() => {
     document.cookie = "userdata=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT";
     socket.disconnect();
+    handleMenuClose();
     push("/");
-  }, [push, socket]);
+  }, [push, handleMenuClose, socket]);
 
   return (
     <HeaderContainer>
@@ -34,11 +41,40 @@ function Header({ theme, user, toggleTheme, toggleLocale, locale, socket }: Head
             <FormattedMessage id="navigation.users" />
           </LinkComponent>
         </NavigationContainer>
-        <MenuButton>
+        <MenuButton onClick={handleMenuOpen}>
           <MenuSvg />
         </MenuButton>
+        <ModalMenu locale={locale} toggleLocale={toggleLocale} visibility={menuVisibility} onClose={handleMenuClose}>
+          <MenuContentContainer>
+            <LinkComponent onClick={handleMenuClose} href="/">
+              <FormattedMessage id="navigation.home" />
+            </LinkComponent>
+            <LinkComponent onClick={handleMenuClose} href="/users">
+              <FormattedMessage id="navigation.users" />
+            </LinkComponent>
+            {user ? (
+              <>
+                <LinkComponent onClick={handleMenuClose} href={`/profile/${user.name}`}>
+                  <FormattedMessage id="header.profile" />
+                </LinkComponent>
+                <NavigationComponent onClick={handleLogout}>
+                  <FormattedMessage id="header.logout" />
+                </NavigationComponent>
+              </>
+            ) : (
+              <>
+                <LinkComponent onClick={handleMenuClose} href="/login">
+                  <FormattedMessage id="header.login" />
+                </LinkComponent>
+                <LinkComponent onClick={handleMenuClose} href="/registration">
+                  <FormattedMessage id="header.registration" />
+                </LinkComponent>
+              </>
+            )}
+          </MenuContentContainer>
+        </ModalMenu>
         <NavigationContainer>
-          <NavigationComponent onClick={toggleLocale}>
+          <NavigationComponent hideOnMobile onClick={toggleLocale}>
             <img src={`/flags/flag-${locale === "ru" ? "en" : "ru"}.svg`} />
             {locale === "ru" ? "English" : "Русский"}
           </NavigationComponent>
@@ -47,19 +83,19 @@ function Header({ theme, user, toggleTheme, toggleLocale, locale, socket }: Head
           </NavigationComponent>
           {user ? (
             <>
-              <LinkComponent href={`/profile/${user.name}`}>
+              <LinkComponent hideOnMobile href={`/profile/${user.name}`}>
                 <FormattedMessage id="header.profile" />
               </LinkComponent>
-              <NavigationComponent onClick={handleLogout}>
+              <NavigationComponent hideOnMobile onClick={handleLogout}>
                 <FormattedMessage id="header.logout" />
               </NavigationComponent>
             </>
           ) : (
             <>
-              <LinkComponent href="/login">
+              <LinkComponent hideOnMobile href="/login">
                 <FormattedMessage id="header.login" />
               </LinkComponent>
-              <LinkComponent href="/registration">
+              <LinkComponent hideOnMobile href="/registration">
                 <FormattedMessage id="header.registration" />
               </LinkComponent>
             </>
@@ -84,28 +120,54 @@ const HeaderContent = styled("div")`
   max-width: 1000px;
   display: flex;
   justify-content: space-between;
-  height: 49px;
+  height: 67px;
 
-  @media (min-width: 768px) {
+  @media (max-width: 768px) {
     height: 61px;
   }
 
-  @media (min-width: 1200px) {
-    height: 67px;
+  @media (max-width: 1200px) {
+    height: 49px;
   }
 `;
 
 const NavigationContainer = styled("div")<{ hideOnMobile?: boolean }>`
-  display: ${({ hideOnMobile }) => (hideOnMobile ? "none" : "flex")};
+  display: flex;
   height: 100%;
 
-  @media (min-width: 768px) {
-    display: flex;
+  @media (max-width: 768px) {
+    display: ${({ hideOnMobile }) => (hideOnMobile ? "none" : "flex")};
+  }
+`;
+
+const MenuContentContainer = styled("div")`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+
+  a {
+    border: 1px solid ${({ theme }) => theme.layout.gray};
+    border-radius: 4px;
+    padding: 4px 10px;
+    min-width: 80px;
+    justify-content: center;
+    background: ${({ theme }) => theme.layout.primary};
+  }
+
+  div {
+    border: 1px solid ${({ theme }) => theme.layout.gray};
+    border-radius: 4px;
+    padding: 4px 10px;
+    min-width: 80px;
+    justify-content: center;
+    background: ${({ theme }) => theme.layout.primary};
   }
 `;
 
 const MenuButton = styled("div")`
-  display: flex;
+  display: none;
   padding: 0 10px;
   align-items: center;
 
@@ -113,12 +175,12 @@ const MenuButton = styled("div")`
     fill: ${({ theme }) => theme.text.primary};
   }
 
-  @media (min-width: 768px) {
-    display: none;
+  @media (max-width: 768px) {
+    display: flex;
   }
 `;
 
-const NavigationComponent = styled("div")`
+const NavigationComponent = styled("div")<{ hideOnMobile?: boolean }>`
   display: flex;
   align-items: center;
   margin: 0;
@@ -137,9 +199,13 @@ const NavigationComponent = styled("div")`
     transition: 0.15s border ease-in-out;
     border-bottom: 2px solid ${({ theme }) => theme.colors.primary};
   }
+
+  @media (max-width: 768px) {
+    display: ${({ hideOnMobile }) => (hideOnMobile ? "none" : "flex")};
+  }
 `;
 
-const LinkComponent = styled(Link)`
+const LinkComponent = styled(Link)<{ hideOnMobile?: boolean }>`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -160,6 +226,10 @@ const LinkComponent = styled(Link)`
   &:hover {
     transition: 0.15s border ease-in-out;
     border-bottom: 2px solid ${({ theme }) => theme.colors.primary};
+  }
+
+  @media (max-width: 768px) {
+    display: ${({ hideOnMobile }) => (hideOnMobile ? "none" : "flex")};
   }
 `;
 

@@ -1,4 +1,5 @@
 import React from "react";
+import Head from "next/head";
 import { AppProps } from "next/app";
 import { useRouter } from "next/router";
 import { Socket } from "socket.io-client";
@@ -64,6 +65,9 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <IntlProvider messages={localeMessages} locale={locale}>
       <ThemeProvider theme={styledTheme[theme]}>
+        <Head>
+          <meta name="theme-color" content={theme === "dark" ? "#3e3d3e" : "#fff"} />
+        </Head>
         <GlobalStyles />
         <NextNprogress
           color="#7c7ce4"

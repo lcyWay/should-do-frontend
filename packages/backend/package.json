@@ -1,15 +1,13 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "private": true,
   "main": "index.js",
   "scripts": {
     "start": "node index"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
     "express": "^4.17.1",
     "mongodb": "^3.6.6",
     "nodemailer": "^6.6.0",

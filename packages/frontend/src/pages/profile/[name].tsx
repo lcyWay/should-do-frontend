@@ -101,6 +101,7 @@ function Profile({ theme, profile, user }: ProfileInterface) {
                 <ActivityMessage key={i}>
                   <ActivityMessageInfo>
                     <img src={profile.imageUrl || "/icons/user.svg"} alt="" />
+                    {profile.name}{" "}
                     {typeof activity.title === "string" ? (
                       activity.title
                     ) : (
@@ -242,19 +243,27 @@ const DataContainer = styled("div")`
 const DataBlock = styled("div")`
   display: flex;
   flex-direction: column;
-  flex: 1;
   gap: 10px;
-  height: 400px;
+  max-height: 400px;
+  height: 100%;
+
+  @media (min-width: 769px) {
+    flex: 1;
+    height: 400px;
+  }
 `;
 
 const ChartContainer = styled("div")`
   display: flex;
   flex: 1;
   overflow: hidden;
-  padding: 10px;
   border: 1px solid ${({ theme }) => theme.layout.gray};
   border-radius: 4px;
   background: ${({ theme }) => theme.layout.primary};
+
+  @media (max-width: 640px) {
+    max-height: 240px;
+  }
 `;
 
 const ActivityContainer = styled("div")`
@@ -267,13 +276,7 @@ const ActivityContainer = styled("div")`
   flex-direction: column;
   gap: 10px;
 
-  @media (min-width: 768px) {
-    height: calc(100% - 40px);
-  }
-
-  @media (min-width: 1200px) {
-    height: calc(100% - 43px);
-
+  @media (min-width: 769px) {
     &::-webkit-scrollbar {
       width: 2px;
     }

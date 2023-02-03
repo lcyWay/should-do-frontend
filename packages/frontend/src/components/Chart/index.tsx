@@ -26,7 +26,7 @@ function Chart({ graphData, theme }: ChartInterface) {
     const viewHeight = height * 2;
     const paddingYbottom = 60;
     const paddingYsum = 100;
-    const paddingX = 60;
+    const paddingX = 46;
     canvas.current.width = viewWidth;
     canvas.current.height = viewHeight;
 

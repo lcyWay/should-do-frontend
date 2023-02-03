@@ -131,6 +131,8 @@ const WelcomeLayoutImage = styled("div")<{ isDarkTheme: boolean }>`
   top: 0;
   bottom: 0;
   filter: ${({ isDarkTheme }) => (isDarkTheme ? "brightness(0.28)" : "none")};
+  background-size: cover;
+  background-position-x: 50%;
   background-image: url("/home_layout.png");
 `;
 

@@ -1,21 +1,11 @@
 {
   "name": "todo",
   "version": "1.0.0",
-  "private": true,
   "scripts": {
     "frontend": "cd packages/frontend && npm run dev",
     "backend": "cd packages/backend && node index"
   },
   "workspaces": [
     "./packages/*"
-  ],
-  "dependencies": {
-    "dayjs": "^1.11.7",
-    "dotenv": "^8.2.0",
-    "jsonwebtoken": "^8.5.1",
-    "jwt-decode": "^3.1.2"
-  },
-  "devDependencies": {
-    "@types/jsonwebtoken": "^9.0.1"
-  }
+  ]
 }
