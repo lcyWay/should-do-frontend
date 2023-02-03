@@ -18,6 +18,8 @@ import { theme as styledTheme } from "styles/theme";
 import ruLocales from "locales/ru.json";
 import enLocales from "locales/en.json";
 
+import "styles/style.css";
+
 export type Theme = "light" | "dark";
 export type Locale = "ru" | "en";
 
@@ -101,15 +103,8 @@ function MyApp({ Component, pageProps }: AppProps) {
 }
 
 const GlobalStyles = createGlobalStyle`
-  @font-face {
-    font-family: "Inter";
-    src: url("/fonts/Inter-Regular.ttf");
-  }
-
   body {
     background: ${({ theme }) => theme.layout.secondary};
-    font-family: "Inter";
-    margin: 0;
   }
 
   * {
