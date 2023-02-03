@@ -12,7 +12,7 @@ app.use(
   cors({
     origin: ["http://localhost:3000", "https://what-should-i-do.vercel.app"],
     optionsSuccessStatus: 200,
-  }),
+  })
 );
 
 const PORT = process.env.PORT || 7900;

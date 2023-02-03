@@ -44,7 +44,12 @@ function Login({ locale }: PageProps) {
         }
 
         createNotification(intl.formatMessage({ id: "notification.success" }));
-        document.cookie = `userdata=${jsonwebtoken.sign({ email, password }, "jjjwwwttt")}; path=/`;
+
+        document.cookie = `userdata=${jsonwebtoken.sign(
+          { email, password },
+          process.env.NEXT_PUBLIC_JWT_SECRET_KEY as string
+        )}; path=/`;
+
         router.push(`/profile/${data.name}`);
       })
       .finally(() => setLoading(false));
