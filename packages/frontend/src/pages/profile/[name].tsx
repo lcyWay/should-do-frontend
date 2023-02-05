@@ -262,7 +262,9 @@ const ChartContainer = styled("div")`
   background: ${({ theme }) => theme.layout.primary};
 
   @media (max-width: 640px) {
-    max-height: 240px;
+    canvas {
+      height: 240px;
+    }
   }
 `;
 

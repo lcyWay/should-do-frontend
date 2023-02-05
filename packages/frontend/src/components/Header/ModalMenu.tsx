@@ -15,10 +15,10 @@ interface ModalMenuInterface {
 }
 
 function ModalMenu({ onClose, locale, toggleLocale, visibility, children }: ModalMenuInterface) {
-  const [renderElement, setRenderElement] = React.useState<HTMLBodyElement | null>(null);
+  const [renderElement, setRenderElement] = React.useState<HTMLElement | null>(null);
 
   React.useEffect(() => {
-    const element = document.querySelector("body");
+    const element = document.getElementById("next-container");
     if (!element) return;
     setRenderElement(element);
   }, []);

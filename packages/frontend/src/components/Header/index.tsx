@@ -34,41 +34,55 @@ function Header({ theme, user, toggleTheme, toggleLocale, locale, socket }: Head
     <HeaderContainer>
       <HeaderContent>
         <NavigationContainer hideOnMobile>
-          <LinkComponent href="/">
-            <FormattedMessage id="navigation.home" />
-          </LinkComponent>
-          <LinkComponent href="/users">
-            <FormattedMessage id="navigation.users" />
-          </LinkComponent>
+          <NavigationComponent>
+            <Link href="/">
+              <FormattedMessage id="navigation.home" />
+            </Link>
+          </NavigationComponent>
+          <NavigationComponent>
+            <Link href="/users">
+              <FormattedMessage id="navigation.users" />
+            </Link>
+          </NavigationComponent>
         </NavigationContainer>
         <MenuButton onClick={handleMenuOpen}>
           <MenuSvg />
         </MenuButton>
         <ModalMenu locale={locale} toggleLocale={toggleLocale} visibility={menuVisibility} onClose={handleMenuClose}>
           <MenuContentContainer>
-            <LinkComponent onClick={handleMenuClose} href="/">
-              <FormattedMessage id="navigation.home" />
-            </LinkComponent>
-            <LinkComponent onClick={handleMenuClose} href="/users">
-              <FormattedMessage id="navigation.users" />
-            </LinkComponent>
+            <NavigationComponent onClick={handleMenuClose}>
+              <Link href="/">
+                <FormattedMessage id="navigation.home" />
+              </Link>
+            </NavigationComponent>
+            <NavigationComponent onClick={handleMenuClose}>
+              <Link href="/users">
+                <FormattedMessage id="navigation.users" />
+              </Link>
+            </NavigationComponent>
             {user ? (
               <>
-                <LinkComponent onClick={handleMenuClose} href={`/profile/${user.name}`}>
-                  <FormattedMessage id="header.profile" />
-                </LinkComponent>
+                <NavigationComponent onClick={handleMenuClose}>
+                  <Link href={`/profile/${user.name}`}>
+                    <FormattedMessage id="header.profile" />
+                  </Link>
+                </NavigationComponent>
                 <NavigationComponent onClick={handleLogout}>
                   <FormattedMessage id="header.logout" />
                 </NavigationComponent>
               </>
             ) : (
               <>
-                <LinkComponent onClick={handleMenuClose} href="/login">
-                  <FormattedMessage id="header.login" />
-                </LinkComponent>
-                <LinkComponent onClick={handleMenuClose} href="/registration">
-                  <FormattedMessage id="header.registration" />
-                </LinkComponent>
+                <NavigationComponent onClick={handleMenuClose}>
+                  <Link href="/login">
+                    <FormattedMessage id="header.login" />
+                  </Link>
+                </NavigationComponent>
+                <NavigationComponent onClick={handleMenuClose}>
+                  <Link href="/registration">
+                    <FormattedMessage id="header.registration" />
+                  </Link>
+                </NavigationComponent>
               </>
             )}
           </MenuContentContainer>
@@ -83,21 +97,27 @@ function Header({ theme, user, toggleTheme, toggleLocale, locale, socket }: Head
           </NavigationComponent>
           {user ? (
             <>
-              <LinkComponent hideOnMobile href={`/profile/${user.name}`}>
-                <FormattedMessage id="header.profile" />
-              </LinkComponent>
+              <NavigationComponent hideOnMobile>
+                <Link href={`/profile/${user.name}`}>
+                  <FormattedMessage id="header.profile" />
+                </Link>
+              </NavigationComponent>
               <NavigationComponent hideOnMobile onClick={handleLogout}>
                 <FormattedMessage id="header.logout" />
               </NavigationComponent>
             </>
           ) : (
             <>
-              <LinkComponent hideOnMobile href="/login">
-                <FormattedMessage id="header.login" />
-              </LinkComponent>
-              <LinkComponent hideOnMobile href="/registration">
-                <FormattedMessage id="header.registration" />
-              </LinkComponent>
+              <NavigationComponent hideOnMobile>
+                <Link href="/login">
+                  <FormattedMessage id="header.login" />
+                </Link>
+              </NavigationComponent>
+              <NavigationComponent hideOnMobile>
+                <Link href="/registration">
+                  <FormattedMessage id="header.registration" />
+                </Link>
+              </NavigationComponent>
             </>
           )}
         </NavigationContainer>
@@ -147,15 +167,6 @@ const MenuContentContainer = styled("div")`
   justify-content: center;
   gap: 10px;
 
-  a {
-    border: 1px solid ${({ theme }) => theme.layout.gray};
-    border-radius: 4px;
-    padding: 4px 10px;
-    min-width: 80px;
-    justify-content: center;
-    background: ${({ theme }) => theme.layout.primary};
-  }
-
   div {
     border: 1px solid ${({ theme }) => theme.layout.gray};
     border-radius: 4px;
@@ -181,34 +192,6 @@ const MenuButton = styled("div")`
 `;
 
 const NavigationComponent = styled("div")<{ hideOnMobile?: boolean }>`
-  display: flex;
-  align-items: center;
-  margin: 0;
-  padding: 0 10px;
-  border-bottom: 2px solid transparent;
-  cursor: pointer;
-  gap: 8px;
-  color: ${({ theme }) => theme.text.primary};
-
-  img {
-    width: 24px;
-    height: 24px;
-  }
-
-  &:hover {
-    transition: 0.15s border ease-in-out;
-    border-bottom: 2px solid ${({ theme }) => theme.colors.primary};
-  }
-
-  @media (max-width: 768px) {
-    display: ${({ hideOnMobile }) => (hideOnMobile ? "none" : "flex")};
-  }
-`;
-
-const LinkComponent = styled(Link)<{ hideOnMobile?: boolean }>`
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   display: flex;
   align-items: center;
   margin: 0;

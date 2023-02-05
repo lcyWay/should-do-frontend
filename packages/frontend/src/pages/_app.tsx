@@ -2,6 +2,7 @@ import React from "react";
 import Head from "next/head";
 import { AppProps } from "next/app";
 import { useRouter } from "next/router";
+import { Inter } from "@next/font/google";
 import { Socket } from "socket.io-client";
 import { IntlProvider } from "react-intl";
 import NextNprogress from "nextjs-progressbar";
@@ -18,7 +19,7 @@ import { theme as styledTheme } from "styles/theme";
 import ruLocales from "locales/ru.json";
 import enLocales from "locales/en.json";
 
-import "styles/style.css";
+const inter = Inter({ subsets: ["latin"] });
 
 export type Theme = "light" | "dark";
 export type Locale = "ru" | "en";
@@ -78,25 +79,27 @@ function MyApp({ Component, pageProps }: AppProps) {
           height={2}
           options={{ easing: "ease", speed: 200 }}
         />
-        <Notifications>
-          <Header
-            theme={theme}
-            locale={locale}
-            socket={socket}
-            toggleTheme={toggleTheme}
-            toggleLocale={toggleLocale}
-            {...pageProps}
-          />
-          <ProfileHeader {...pageProps} />
-          <Component
-            theme={theme}
-            locale={locale}
-            socket={socket}
-            toggleTheme={toggleTheme}
-            toggleLocale={toggleLocale}
-            {...pageProps}
-          />
-        </Notifications>
+        <main id="next-container" className={inter.className}>
+          <Notifications>
+            <Header
+              theme={theme}
+              locale={locale}
+              socket={socket}
+              toggleTheme={toggleTheme}
+              toggleLocale={toggleLocale}
+              {...pageProps}
+            />
+            <ProfileHeader {...pageProps} />
+            <Component
+              theme={theme}
+              locale={locale}
+              socket={socket}
+              toggleTheme={toggleTheme}
+              toggleLocale={toggleLocale}
+              {...pageProps}
+            />
+          </Notifications>
+        </main>
       </ThemeProvider>
     </IntlProvider>
   );
@@ -105,6 +108,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 const GlobalStyles = createGlobalStyle`
   body {
     background: ${({ theme }) => theme.layout.secondary};
+    margin: 0;
   }
 
   * {
