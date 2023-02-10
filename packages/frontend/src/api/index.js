@@ -1,6 +1,6 @@
-import { server } from "../config";
+import { server, socket_server } from "../config";
 
-export const apiBeba = async (url, data) => {
+export const apiNextServer = async (url, data) => {
   return await fetch(`${server}/${url}`, {
     method: "POST",
     headers: {
@@ -9,3 +9,14 @@ export const apiBeba = async (url, data) => {
     body: JSON.stringify(data),
   }).then((r) => r.json());
 };
+
+export const apiBackend = async (url, data) => {
+  return await fetch(`${socket_server}/${url}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  }).then((r) => r.json());
+};
+

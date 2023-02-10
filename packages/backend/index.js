@@ -61,7 +61,7 @@ app.post("/send_email", async (req, res) => {
   const data = await transporter.sendMail({
     from: process.env.NODEMAILER_USER,
     to: email,
-    subject: "Confirm registration",
+    subject: "What Should I Do - Confirm Registration",
     html: `<b>Hello!</b><p>Dear ${name}!</p><p>Thanks for signing up with my todo! You must follow this link to activate your account: ${link}</p>`,
   });
   res.status(200).json(data);

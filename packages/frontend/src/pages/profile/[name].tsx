@@ -7,7 +7,7 @@ import Head from "next/head";
 import { FormattedMessage, useIntl } from "react-intl";
 
 import { TaskType, UserType } from "types";
-import { apiBeba } from "api";
+import { apiNextServer } from "api";
 
 import TaskCard from "components/Task";
 import Chart from "components/Chart";
@@ -42,14 +42,14 @@ function Profile({ theme, profile, user }: ProfileInterface) {
   }, [profile, profileUser]);
 
   const handleDailyComplete = async (id: string) => {
-    const data = await apiBeba("daily/complete", { name: user.name, id });
+    const data = await apiNextServer("daily/complete", { name: user.name, id });
     if (!data) return;
     setDailyTasks(data);
     createNotification(intl.formatMessage({ id: "notification.daily_complete" }));
   };
 
   const handleChangeComplete = async (id: string) => {
-    const data = await apiBeba(`objectives/complete`, { name: user.name, id });
+    const data = await apiNextServer(`objectives/complete`, { name: user.name, id });
     if (!data) return;
     setTasks(data);
     createNotification(intl.formatMessage({ id: "notification.objective_complete" }));
@@ -363,7 +363,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const { user } = await initialize(context);
 
   const name = context.query.name;
-  const profile = await apiBeba("profile", { name });
+  const profile = await apiNextServer("profile", { name });
 
   return {
     props: {

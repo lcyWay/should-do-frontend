@@ -9,7 +9,7 @@ import Input from "primitives/Input";
 import TaskCard from "components/Task";
 import { NotificationContext } from "components/Notifications";
 
-import { apiBeba } from "api";
+import { apiNextServer } from "api";
 
 import { TaskType, UserType } from "types";
 
@@ -31,7 +31,7 @@ function CreatePage({ profile, user, page }: CreatePageInterface) {
 
   const handleCreate = React.useCallback(async () => {
     if (createInputValue === "") return;
-    const data = await apiBeba(page + "/create", {
+    const data = await apiNextServer(page + "/create", {
       name: user.name,
       title: createInputValue,
     });
@@ -43,7 +43,7 @@ function CreatePage({ profile, user, page }: CreatePageInterface) {
 
   const handleDelete = React.useCallback(
     async (id: string) => {
-      const data = await apiBeba(page + "/delete", {
+      const data = await apiNextServer(page + "/delete", {
         name: user.name,
         _id: id,
       });
@@ -56,7 +56,7 @@ function CreatePage({ profile, user, page }: CreatePageInterface) {
 
   const handleChangeComplete = React.useCallback(
     async (id: string) => {
-      const data = await apiBeba(page + "/complete", { name: user.name, id });
+      const data = await apiNextServer(page + "/complete", { name: user.name, id });
       if (!data) return;
       createNotification(intl.formatMessage({ id: `notification.${page}_complete` }));
       setTasks(data);

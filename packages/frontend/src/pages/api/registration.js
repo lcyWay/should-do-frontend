@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 
 import mongo from "../../config/db";
-import { api_back } from "../../api";
+import { apiBackend } from "../../api";
 
 module.exports = async (req, res) => {
   const { email, name, password } = req.body;
@@ -50,7 +50,7 @@ module.exports = async (req, res) => {
             "Mon Apr 19 2019 13:56:17 GMT+0300 (Москва, стандартное время)",
         };
         collection.insertOne(newUser).then(async () => {
-          await api_back("send_email", {
+          await apiBackend("send_email", {
             email,
             name,
             link: `https://what-should-i-do.vercel.app/profile/activate/${newUser._id}`,

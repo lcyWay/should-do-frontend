@@ -3,7 +3,7 @@ import Head from "next/head";
 import { useIntl } from "react-intl";
 import { GetServerSideProps } from "next";
 
-import { apiBeba } from "api";
+import { apiNextServer } from "api";
 import { initialize } from "utils/initialize";
 
 import { PageProps } from "pages/_app";
@@ -39,7 +39,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
 
   const { name } = context.query;
-  const profile = await apiBeba("daily/tasks", { name });
+  const profile = await apiNextServer("daily/tasks", { name });
 
   if (user.name !== profile.name)
     return {

@@ -8,7 +8,7 @@ import { FormattedMessage, useIntl } from "react-intl";
 import Button from "primitives/Button";
 import Checkbox from "primitives/Checkbox";
 
-import { apiBeba } from "api";
+import { apiNextServer } from "api";
 import { initialize } from "utils/initialize";
 
 import { UserType } from "types";
@@ -39,7 +39,7 @@ function Options({ user }: OptionsInteface) {
       reader.onload = async () => {
         setLoading(true);
         const imageUrl = reader.result;
-        const data = await apiBeba("options/avatar", { name: userData.name, imageUrl });
+        const data = await apiNextServer("options/avatar", { name: userData.name, imageUrl });
         if (data) setUserData(data);
         setLoading(false);
       };
@@ -51,19 +51,19 @@ function Options({ user }: OptionsInteface) {
     if (loading) return;
     if (userData.imageUrl === null) return;
     setLoading(true);
-    const data = await apiBeba("options/avatar", { name: userData.name, imageUrl: null });
+    const data = await apiNextServer("options/avatar", { name: userData.name, imageUrl: null });
     if (data) setUserData(data);
     setLoading(false);
   }, [loading, userData]);
 
   const handleActivityClear = React.useCallback(async () => {
-    const data = await apiBeba("options/clear_activity", { name: userData.name });
+    const data = await apiNextServer("options/clear_activity", { name: userData.name });
     if (!data || typeof data !== "object" || data === null) return;
     setUserData(data);
   }, [userData]);
 
   const handleTasksVisibilityChange = React.useCallback(async () => {
-    const data = await apiBeba("options/show_tasks", { name: userData.name });
+    const data = await apiNextServer("options/show_tasks", { name: userData.name });
     if (!data || typeof data !== "object" || data === null) return;
     setUserData(data);
   }, [userData]);

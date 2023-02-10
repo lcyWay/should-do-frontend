@@ -14,7 +14,7 @@ import Button from "primitives/Button";
 import { initialize } from "utils/initialize";
 
 import { UserType } from "types";
-import { apiBeba } from "api";
+import { apiNextServer } from "api";
 
 import { PageProps } from "./_app";
 
@@ -41,7 +41,7 @@ function Users({ users, user }: UsersInterface) {
     setLoading(true);
     setCount(count + 10);
 
-    const data = await apiBeba("users", { count: count + 10 });
+    const data = await apiNextServer("users", { count: count + 10 });
     setLoading(false);
 
     if (!data || !data?.ok || !data?.users) {
@@ -147,7 +147,7 @@ const ButtonContainer = styled("div")`
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { user } = await initialize(context);
-  const data = await apiBeba("users", { count: 10 });
+  const data = await apiNextServer("users", { count: 10 });
 
   return {
     props: {

@@ -6,7 +6,7 @@ import { Inter } from "@next/font/google";
 import { Socket } from "socket.io-client";
 import { IntlProvider } from "react-intl";
 import NextNprogress from "nextjs-progressbar";
-import { createGlobalStyle, ThemeProvider } from "styled-components";
+import styled, { createGlobalStyle, ThemeProvider } from "styled-components";
 
 import Header from "components/Header";
 import ProfileHeader from "components/ProfileHeader";
@@ -79,7 +79,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           height={2}
           options={{ easing: "ease", speed: 200 }}
         />
-        <main id="next-container" className={inter.className}>
+        <MainContainer id="next-container" className={inter.className}>
           <Notifications>
             <Header
               theme={theme}
@@ -99,7 +99,7 @@ function MyApp({ Component, pageProps }: AppProps) {
               {...pageProps}
             />
           </Notifications>
-        </main>
+        </MainContainer>
       </ThemeProvider>
     </IntlProvider>
   );
@@ -121,6 +121,12 @@ const GlobalStyles = createGlobalStyle`
     flex-direction: column;
     min-height: 100vh;
   }
+`;
+
+const MainContainer = styled("main")`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 `;
 
 export default MyApp;

@@ -16,7 +16,7 @@ import { NotificationContext } from "components/Notifications";
 import { initialize } from "utils/initialize";
 
 import { googleApiKey } from "config";
-import { apiBeba } from "api";
+import { apiNextServer } from "api";
 
 import { PageProps } from "./_app";
 
@@ -36,7 +36,7 @@ function Login({ locale }: PageProps) {
     if (loading || !captcha || !email || !password) return;
 
     setLoading(true);
-    apiBeba("login", { email, password })
+    apiNextServer("login", { email, password })
       .then((data) => {
         if (!data || !data._id) {
           createNotification(intl.formatMessage({ id: "notification.user_not_found" }));

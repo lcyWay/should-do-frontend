@@ -16,7 +16,7 @@ import Input from "primitives/Input";
 import { initialize } from "utils/initialize";
 
 import { googleApiKey } from "config";
-import { apiBeba } from "api";
+import { apiNextServer } from "api";
 
 import { PageProps } from "./_app";
 
@@ -51,7 +51,7 @@ function Register({ locale }: PageProps) {
     const { username, password, email } = state;
     if (!username || !password || !email) return;
 
-    const data = await apiBeba("registration", { name: username, password, email });
+    const data = await apiNextServer("registration", { name: username, password, email });
     setLoading(false);
     if (!data || data === null || typeof data !== "object") return;
     createNotification(intl.formatMessage({ id: "notification.registration.code_" + data.code_message }));

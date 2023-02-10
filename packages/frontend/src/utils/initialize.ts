@@ -2,7 +2,7 @@ import cookies from "nookies";
 import jsonwebtoken from "jsonwebtoken";
 import { GetServerSidePropsContext } from "next";
 
-import { apiBeba } from "api";
+import { apiNextServer } from "api";
 
 import { UserType } from "types";
 
@@ -26,6 +26,6 @@ export async function initialize(context: GetServerSidePropsContext): Promise<in
     return NULLABLE_USER;
   }
 
-  const user = await apiBeba("login", state);
+  const user = await apiNextServer("login", state);
   return { user: user || null };
 }

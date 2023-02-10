@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { GetServerSideProps } from "next";
 import { FormattedMessage, useIntl } from "react-intl";
 
-import { apiBeba } from "api";
+import { apiNextServer } from "api";
 
 import { NotificationContext } from "components/Notifications";
 
@@ -44,7 +44,7 @@ const Container = styled("div")`
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.query;
 
-  const result = await apiBeba("activation", { id });
+  const result = await apiNextServer("activation", { id });
   const code = result?.message_code;
   const success = !!result?.success;
 

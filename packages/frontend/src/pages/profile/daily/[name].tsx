@@ -4,7 +4,7 @@ import { useIntl } from "react-intl";
 import { GetServerSideProps } from "next";
 
 import { UserType } from "types";
-import { apiBeba } from "api";
+import { apiNextServer } from "api";
 import { initialize } from "utils/initialize";
 
 import CreatePage from "views/CreatePage";
@@ -37,7 +37,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
 
   const { name } = context.query;
-  const profile = await apiBeba("daily/tasks", { name });
+  const profile = await apiNextServer("daily/tasks", { name });
 
   return {
     props: {
