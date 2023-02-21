@@ -19,7 +19,7 @@
   "notification.error": "Error",
   "notification.success": "Success",
   "notification.wrong_email": "Wrong email format",
-  "notification.all_users_are_showed": "No more activated users to show",
+  "notification.all_users_are_showed": "No more users to show",
   "notification.user_not_found": "User not found",
   "notification.objectives_complete": "Objective completed",
   "notification.objectives_create": "Objective created",

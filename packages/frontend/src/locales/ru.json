@@ -19,7 +19,7 @@
   "notification.error": "Ошибка",
   "notification.success": "Выполнено успешно",
   "notification.wrong_email": "Неправильный формат почты",
-  "notification.all_users_are_showed": "Показаны все активированные пользователи",
+  "notification.all_users_are_showed": "Показаны все пользователи",
   "notification.user_not_found": "Пользователь не найден",
   "notification.objectives_complete": "Цель выполнена",
   "notification.objectives_create": "Цель добавлена",
