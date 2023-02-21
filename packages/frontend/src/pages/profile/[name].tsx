@@ -277,6 +277,7 @@ const ActivityContainer = styled("div")`
   display: flex;
   flex-direction: column;
   gap: 10px;
+  height: 100%;
 
   @media (min-width: 769px) {
     &::-webkit-scrollbar {
@@ -364,6 +365,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const name = context.query.name;
   const profile = await apiNextServer("profile", { name });
+
+  if (profile.error)
+    return {
+      props: {},
+      redirect: {
+        destination: "/",
+      },
+    };
 
   return {
     props: {

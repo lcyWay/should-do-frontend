@@ -27,5 +27,10 @@ export async function initialize(context: GetServerSidePropsContext): Promise<in
   }
 
   const user = await apiNextServer("login", state);
-  return { user: user || null };
+  if (!user || user.message_code === "001") {
+    cookies.destroy(context, "userdata");
+    return NULLABLE_USER;
+  }
+
+  return { user };
 }

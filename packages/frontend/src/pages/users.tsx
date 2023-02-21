@@ -80,7 +80,7 @@ function Users({ users, user }: UsersInterface) {
         })}
         {showButton && (
           <ButtonContainer>
-            <Button onClick={handleUpload}>
+            <Button loading={loading} onClick={handleUpload}>
               <FormattedMessage id="users.load_more" />
             </Button>
           </ButtonContainer>

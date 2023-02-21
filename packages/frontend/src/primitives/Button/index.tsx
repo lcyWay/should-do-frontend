@@ -7,17 +7,33 @@ interface ButtonInterface {
   small?: boolean;
   href?: string;
   blank?: boolean;
+  loading?: boolean;
   onClick?: () => void;
 }
 
-function Button({ children, onClick, href, blank, small }: ButtonInterface) {
+function Button({ children, loading, onClick, href, blank, small }: ButtonInterface) {
+  const handleButtonClick = React.useCallback(() => {
+    if (loading || !onClick) return;
+    onClick();
+  }, [loading, onClick]);
+
   return href ? (
     <StyledButtonLink small={small} href={href} target={blank ? "_blank" : "_self"} type="button">
       {children}
+      {loading && (
+        <LoadingContainer>
+          <Loading />
+        </LoadingContainer>
+      )}
     </StyledButtonLink>
   ) : (
-    <StyledButton small={small} onClick={onClick} type="button">
+    <StyledButton small={small} onClick={handleButtonClick} type="button">
       {children}
+      {loading && (
+        <LoadingContainer>
+          <Loading />
+        </LoadingContainer>
+      )}
     </StyledButton>
   );
 }
@@ -40,6 +56,9 @@ const StyledButton = styled("button")<{ small?: boolean }>`
   color: ${({ theme }) => theme.colors.primary};
   cursor: pointer;
   background-color: transparent;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   animation: ${backgroundAnimation} 1s infinite linear;
   background-size: 20px 2px, 20px 2px, 2px 20px, 2px 20px;
   background-image: linear-gradient(90deg, ${({ theme }) => theme.colors.primary} 50%, transparent 50%),
@@ -74,6 +93,34 @@ const StyledButtonLink = styled(Link)<{ small?: boolean }>`
     padding: 10px ${({ small }) => (small ? "10px" : "32px")};
     font-size: 18px;
   }
+`;
+
+const loadingAnimation = keyframes`
+  0% {
+    transform: rotate(0);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+`;
+
+const LoadingContainer = styled("div")`
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: ${loadingAnimation} 2s infinite linear;
+  background: conic-gradient(transparent 180deg, ${({ theme }) => theme.colors.primary} 180deg);
+`;
+
+const Loading = styled("div")`
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: ${({ theme }) => theme.layout.secondary};
 `;
 
 export default React.memo(Button);

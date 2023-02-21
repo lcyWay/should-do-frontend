@@ -67,7 +67,7 @@ function Header({ theme, user, toggleTheme, toggleLocale, locale, socket }: Head
                     <FormattedMessage id="header.profile" />
                   </Link>
                 </NavigationComponent>
-                <NavigationComponent onClick={handleLogout}>
+                <NavigationComponent withPaddings onClick={handleLogout}>
                   <FormattedMessage id="header.logout" />
                 </NavigationComponent>
               </>
@@ -88,11 +88,11 @@ function Header({ theme, user, toggleTheme, toggleLocale, locale, socket }: Head
           </MenuContentContainer>
         </ModalMenu>
         <NavigationContainer>
-          <NavigationComponent hideOnMobile onClick={toggleLocale}>
+          <NavigationComponent withPaddings hideOnMobile onClick={toggleLocale}>
             <img src={`/flags/flag-${locale === "ru" ? "en" : "ru"}.svg`} />
             {locale === "ru" ? "English" : "Русский"}
           </NavigationComponent>
-          <NavigationComponent onClick={toggleTheme}>
+          <NavigationComponent withPaddings onClick={toggleTheme}>
             <img style={{ width: 18, height: 18 }} src={theme === "dark" ? "/icons/sun.svg" : "/icons/ph_moon.svg"} />
           </NavigationComponent>
           {user ? (
@@ -102,7 +102,7 @@ function Header({ theme, user, toggleTheme, toggleLocale, locale, socket }: Head
                   <FormattedMessage id="header.profile" />
                 </Link>
               </NavigationComponent>
-              <NavigationComponent hideOnMobile onClick={handleLogout}>
+              <NavigationComponent withPaddings hideOnMobile onClick={handleLogout}>
                 <FormattedMessage id="header.logout" />
               </NavigationComponent>
             </>
@@ -191,15 +191,24 @@ const MenuButton = styled("div")`
   }
 `;
 
-const NavigationComponent = styled("div")<{ hideOnMobile?: boolean }>`
+const NavigationComponent = styled("div")<{ hideOnMobile?: boolean; withPaddings?: boolean }>`
   display: flex;
   align-items: center;
   margin: 0;
-  padding: 0 10px;
   border-bottom: 2px solid transparent;
   cursor: pointer;
   gap: 8px;
+  padding: 0 ${({ withPaddings }) => (withPaddings ? "10px" : "0")};
   color: ${({ theme }) => theme.text.primary};
+
+  a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 0 10px;
+  }
 
   img {
     width: 24px;

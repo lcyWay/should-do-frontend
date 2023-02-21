@@ -1,4 +1,4 @@
-import { server, socket_server } from "../config";
+import { server } from "../config";
 
 export const apiNextServer = async (url, data) => {
   return await fetch(`${server}/${url}`, {
@@ -7,16 +7,7 @@ export const apiNextServer = async (url, data) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
-  }).then((r) => r.json());
+  })
+    .then((r) => r.json())
+    .catch((message) => ({ error: true, message }));
 };
-
-export const apiBackend = async (url, data) => {
-  return await fetch(`${socket_server}/${url}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  }).then((r) => r.json());
-};
-

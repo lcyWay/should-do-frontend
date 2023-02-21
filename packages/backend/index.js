@@ -1,6 +1,5 @@
 const MongoClient = require("mongodb").MongoClient;
 const express = require("express");
-const nodemailer = require("nodemailer");
 const app = express();
 const http = require("http").Server(app);
 const cors = require("cors");
@@ -47,22 +46,3 @@ async function start() {
   http.listen(PORT, () => console.log(`Example app listening at ${PORT}`));
 }
 start();
-
-app.post("/send_email", async (req, res) => {
-  const { email, name, link } = req.body;
-  const transporter = nodemailer.createTransport({
-    host: "smtp.mail.ru",
-    auth: {
-      user: process.env.NODEMAILER_USER,
-      pass: process.env.NODEMAILER_PASSWORD,
-    },
-  });
-
-  const data = await transporter.sendMail({
-    from: process.env.NODEMAILER_USER,
-    to: email,
-    subject: "What Should I Do - Confirm Registration",
-    html: `<b>Hello!</b><p>Dear ${name}!</p><p>Thanks for signing up with my todo! You must follow this link to activate your account: ${link}</p>`,
-  });
-  res.status(200).json(data);
-});

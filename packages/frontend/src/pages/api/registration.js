@@ -1,7 +1,6 @@
 import { ObjectId } from "mongodb";
 
 import mongo from "../../config/db";
-import { apiBackend } from "../../api";
 
 module.exports = async (req, res) => {
   const { email, name, password } = req.body;
@@ -37,24 +36,17 @@ module.exports = async (req, res) => {
           imageUrl: null,
           showTasks: true,
           online: new Date(),
-          isActivated: false,
-          activity: [],
+          isActivated: true,
+          activity: [{ createdAt: new Date(), title: { code: "001" } }],
           tasks: [],
           dailyTasks: [],
           graphData: {},
           todayCompleteTasks: 0,
           daysInRow: 0,
-          daysInRowDate:
-            "Mon Apr 19 2019 13:56:17 GMT+0300 (Москва, стандартное время)",
-          lastCompleteDate:
-            "Mon Apr 19 2019 13:56:17 GMT+0300 (Москва, стандартное время)",
+          daysInRowDate: "Mon Apr 19 2019 13:56:17 GMT+0300 (Москва, стандартное время)",
+          lastCompleteDate: "Mon Apr 19 2019 13:56:17 GMT+0300 (Москва, стандартное время)",
         };
-        collection.insertOne(newUser).then(async () => {
-          await apiBackend("send_email", {
-            email,
-            name,
-            link: `https://what-should-i-do.vercel.app/profile/activate/${newUser._id}`,
-          });
+        collection.insertOne(newUser).then(() => {
           res.status(200).json({ ok: true, code_message: "003" });
         });
       }

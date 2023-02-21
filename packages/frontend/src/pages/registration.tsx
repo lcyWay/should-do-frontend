@@ -46,19 +46,28 @@ function Register({ locale }: PageProps) {
 
   const handleRegister = React.useCallback(async () => {
     if (loading || !captcha) return;
-    setLoading(true);
 
     const { username, password, email } = state;
     if (!username || !password || !email) return;
 
-    const data = await apiNextServer("registration", { name: username, password, email });
-    setLoading(false);
-    if (!data || data === null || typeof data !== "object") return;
-    createNotification(intl.formatMessage({ id: "notification.registration.code_" + data.code_message }));
+    if (!email.includes("@") || !email.includes(".")) {
+      createNotification(intl.formatMessage({ id: "notification.wrong_email" }));
+      return;
+    }
 
-    if (!data.ok) return;
+    setLoading(true);
+
+    const data = await apiNextServer("registration", { name: username, password, email });
+
+    if (!data || data === null || typeof data !== "object" || !data.ok) {
+      createNotification(intl.formatMessage({ id: "notification.error" }));
+      setLoading(false);
+      return;
+    }
+
+    createNotification(intl.formatMessage({ id: "notification.registration.code_" + data.code_message }));
     document.cookie = `userdata=${jsonwebtoken.sign({ email, password }, "jjjwwwttt")}; path=/`;
-    router.push("/profile/" + state.username);
+    setTimeout(() => router.push("/profile/" + state.username), 1000);
   }, [captcha, createNotification, intl, loading, router, state]);
 
   return (
@@ -84,19 +93,16 @@ function Register({ locale }: PageProps) {
             </TextField>
             <TextField>
               <span>password</span>
-              <Input onChange={(e) => handleChange(e, "password")} value={state.password} />
+              <Input onChange={(e) => handleChange(e, "password")} value={state.password} password />
             </TextField>
           </FieldsContainer>
 
           <ReCAPTCHA sitekey={googleApiKey} onChange={() => setCaptcha(true)} hl={locale} />
 
           <div>
-            <Button onClick={handleRegister}>
+            <Button loading={loading} onClick={handleRegister}>
               <FormattedMessage id="registration.registration_button" />
             </Button>
-          </div>
-          <div style={{ textAlign: "center" }}>
-            <FormattedMessage id="registration.confirmation_hint" />
           </div>
           <div>
             <FormattedMessage id="registration.have_an_account" />{" "}
