@@ -133,7 +133,7 @@ const WelcomeLayoutImage = styled("div")<{ isDarkTheme: boolean }>`
   filter: ${({ isDarkTheme }) => (isDarkTheme ? "brightness(0.28)" : "none")};
   background-size: cover;
   background-position-x: 50%;
-  background-image: url("/home_layout.png");
+  background-image: url("/images/layout.png"), url("/images/layout_compressed.jpg");
 `;
 
 const WelcomeLayoutText = styled("div")`
