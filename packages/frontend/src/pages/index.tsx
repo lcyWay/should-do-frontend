@@ -34,13 +34,13 @@ function Home({ theme }: PageProps) {
             </Button>
           </WelcomeLayoutText>
           <LinksContainer>
+            <LinkButton href="https://t.me/lowndmc" target="_blank">
+              <img src="/icons/telegram.svg" alt="" />
+              lowndmc
+            </LinkButton>
             <LinkButton href="https://github.com/lcyWay" target="_blank">
               <img src="/icons/github.svg" alt="" />
               GitHub
-            </LinkButton>
-            <LinkButton href="https://hh.ru" target="_blank">
-              <img src="/icons/hh.svg" alt="" />
-              HeadHunter
             </LinkButton>
           </LinksContainer>
         </WelcomeLayoutContainer>
